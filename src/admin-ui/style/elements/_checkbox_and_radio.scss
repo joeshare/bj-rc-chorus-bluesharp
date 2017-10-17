@@ -1,0 +1,91 @@
+// Author: Awey
+// email: chenwei@rongcapital.cn
+// github: https://github.com/BboyAwey
+// blog: http://www.jianshu.com/u/3c8fe1455914
+
+// Modifier:
+
+// checkbox and radio
+
+// hide the default checkbox and radio
+input[type="checkbox"],
+input[type="radio"] {
+  width: auto;
+  height: auto;
+}
+input.admin-radio,
+input.admin-checkbox {
+  display: none;
+}
+// basic style
+input.admin-radio + .admin-radio-sub,
+input.admin-checkbox + .admin-checkbox-sub {
+  display: inline-block;
+  width: 16px;
+  height: 16px;
+  margin-bottom: - 2px;
+  border: 1px solid $grayBrighten5;
+  border-radius: 2px;
+  outline: none;
+}
+input.admin-radio + .admin-radio-sub {
+  border-radius: 100%;
+}
+
+// hover style
+label:hover > input.admin-radio:not(:disabled):not(:checked) + .admin-radio-sub,
+label:hover > input.admin-checkbox:not(:disabled):not(:checked) + .admin-checkbox-sub {
+  border-color: $primary;
+}
+
+// disabled style
+input.admin-radio:disabled + .admin-radio-sub,
+input.admin-checkbox:disabled + .admin-checkbox-sub {
+  border-color: $grayBrighten10;
+  background-color: $grayBrighten20;
+  cursor: not-allowed;
+}
+input.admin-checkbox:checked:disabled + .admin-checkbox-sub {
+  border: none;
+  background-color: rgba($primary, .3)
+}
+input.admin-radio:checked:disabled + .admin-radio-sub {
+  border-color: rgba($primary, .3);
+}
+input.admin-radio:checked:disabled + .admin-radio-sub:before {
+  background-color: rgba($primary, .3);
+}
+// checked style
+input.admin-checkbox:checked + .admin-checkbox-sub {
+  position: relative;
+  border: none;
+  background-color: $primary;
+}
+input.admin-checkbox:checked + .admin-checkbox-sub:before {
+  content: '';
+  position: absolute;
+  top: 4px;
+  left: 3px;
+  display: inline-block;
+  width: 8px;
+  height: 4px;
+  border-left: 2px solid #fff;
+  border-bottom: 2px solid #fff;
+  transform-origin: 50% 50%;
+  transform: rotate(-45deg);
+}
+input.admin-radio:checked + .admin-radio-sub {
+  position: relative;
+  border-color: $primary;
+}
+input.admin-radio:checked + .admin-radio-sub:before {
+  content: '';
+  display: inline-block;
+  position: absolute;
+  top: 2px;
+  left: 2px;
+  width: 10px;
+  height: 10px;
+  background-color: $primary;
+  border-radius: 100%;
+}

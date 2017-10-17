@@ -1,0 +1,34 @@
+// Author: Awey
+// email: chenwei@rongcapital.cn
+// github: https://github.com/BboyAwey
+// blog: http://www.jianshu.com/u/3c8fe1455914
+
+// Modifier:
+
+// textarea
+textarea {
+  min-height: 62px;
+  min-width: 198px;
+  border-radius: 2px;
+  border: 1px solid $grayBrighten10;
+  padding: 8px 12px;
+  font-family: $fontFamily;
+  color: $grayDarken35;
+  font-size: $normal;
+  outline: none;
+}
+textarea.admin-small {
+  min-height: 52px;
+  min-width: 166px;
+  padding: 6px 8px;
+  font-size: $small;
+}
+textarea:focus {
+  border-color: $info;
+  box-shadow: 0 0 8px rgba($info, .3);
+}
+textarea:disabled {
+  background-color: $grayBrighten20;
+  border: 1px solid $grayBrighten15;
+  cursor: not-allowed;
+}

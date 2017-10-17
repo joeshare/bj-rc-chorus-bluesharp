@@ -1,0 +1,21 @@
+// Author: Awey
+// email: chenwei@rongcapital.cn
+// github: https://github.com/BboyAwey
+// blog: http://www.jianshu.com/u/3c8fe1455914
+
+// Modifier:
+
+// list
+ul.admin-list, ol.admin-list {
+  padding: 8px 0;
+}
+.admin-list > li {
+  padding: 8px 24px;
+}
+.admin-list.admin-list-inline, .admin-list.admin-list-inline {
+  overflow: hidden;
+}
+.admin-list.admin-list-inline > li, .admin-list.admin-list-inline > li {
+  float: left;
+  padding: 12px 12px;
+}

@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<!-- saved from url=(0072)http://whxaxes.github.io/canvas-test/src/Funny-demo/transform/demo1.html -->
+<html><head lang="en"><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <title>添加对象</title>
+    <style>
+        body{-moz-user-select: none;}
+        #cas{
+            position: absolute;
+            border: 1px solid #999;
+        }
+		canvas,img{
+		   image-rendering: optimizeSpeed;             /* Older versions of FF          */
+		   image-rendering: -moz-crisp-edges;          /* FF 6.0+                       */
+		   image-rendering: -webkit-optimize-contrast; /* Safari                        */
+		   image-rendering: -o-crisp-edges;            /* OS X & Windows Opera (12.02+) */
+		   image-rendering: pixelated;                 /* Awesome future-browsers       */
+		   -ms-interpolation-mode: nearest-neighbor;   /* IE                            */
+		}
+    </style>
+</head>
+<body>
+<div style="width:1000px;height:500px;">
+<canvas id="cas" width="1000" height="500">
+    亲，你滴浏览器太out啦，换一个吧
+</canvas>
+</div>
+<script src="../../js/easeljs-0.8.2.combined.js"></script>
+<script src="../../js/easeljs-brush.plugin.js"></script>
+<script>
+var s1,s2,s3;
+var canvas = document.getElementById("cas");
+var stage = new createjs.Stage(canvas);
+var container = new createjs.Container();
+
+function draw(ctx){
+       var x=this.x,y=this.y;
+	   ctx.save(); 
+ 	   ctx.beginPath();
+	   //ctx.scale(this.scaleX,this.scaleY);
+	   ctx.arc(0,0,40,0*Math.PI,2*Math.PI)
+       ctx.closePath();
+       ctx.fillStyle = this.fillStyle||'#f4f4f4';
+       ctx.fill();
+       ctx.strokeStyle = this.strokeStyle;
+       ctx.stroke();
+	   ctx.restore(); 
+}
+
+
+function ready(){
+  var cfg={  	
+				
+				cursor:"pointer",
+				strokeStyle:'#e64646',
+				fillStyle:'#ffe1e1',
+				draw:draw
+			  };
+  s1=new createjs.Brush(Object.assign({name:'s1',x:140*Math.random(),y:240*Math.random()},cfg));
+  s2=new createjs.Brush(Object.assign({name:'s2',x:140*Math.random(),y:240*Math.random()},cfg));
+  s3=new createjs.Brush(Object.assign({name:'s3',x:140*Math.random(),y:240*Math.random()},cfg));
+   
+  container.addChild(s1,s2,s3);
+  var len=30;
+  while(len--){
+     var cavs=stage.canvas,
+	 x = cavs.width * Math.random() | 0,
+	 y = cavs.height * Math.random() | 0,
+	 scale=Math.random() * 0.4 + 0.6;
+	 s=new createjs.Brush(Object.assign({name:'len'+len,x:x,y:y},cfg));
+     container.addChild(s);
+  }
+  stage.addChild(container);
+  stage.update();
+}
+ready();
+</script>
+</body></html>

@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<!-- saved from url=(0072)http://whxaxes.github.io/canvas-test/src/Funny-demo/transform/demo1.html -->
+<html><head lang="en"><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <title>组合模式</title>
+    <style>
+        body{-moz-user-select: none;}
+        #cas{
+            position: absolute;
+            
+            border: 1px solid;
+        }
+        .tips{text-align: center;margin: 15px 0;}
+        .control{ text-align: center; }
+		canvas,img{
+		   image-rendering: optimizeSpeed;             /* Older versions of FF          */
+		  image-rendering: -moz-crisp-edges;          /* FF 6.0+                       */
+		  image-rendering: -webkit-optimize-contrast; /* Safari                        */
+		  image-rendering: -o-crisp-edges;            /* OS X & Windows Opera (12.02+) */
+		  image-rendering: pixelated;                 /* Awesome future-browsers       */
+		  -ms-interpolation-mode: nearest-neighbor;   /* IE                            */
+		}
+    </style>
+</head>
+<body onselectstart="return false">
+<div style="width:1000px;height:500px;">
+<canvas id="cas" width="1000" height="500">
+    亲，你滴浏览器太out啦，换一个吧
+</canvas>
+</div>
+<script src="../../js/easeljs-0.8.2.combined.js"></script>
+<script src="../../js/easeljs-brush.plugin.js"></script>
+<script>
+var canvas, stage;
+
+var mouseTarget;	// the display object currently under the mouse, or being dragged
+var dragStarted;	// indicates whether we are currently in a drag operation
+var offset;
+var update = true;
+var iconObj;
+var image;
+var maxZ=1000000;
+var container;
+var lins={};
+var lineEndName=null;
+function createLine(opt){
+   function drawLine(ctx){
+		ctx.save(); 
+		ctx.beginPath();
+		ctx.strokeStyle = '#d98d4f';
+		ctx.lineWidth = 4;
+		ctx.moveTo(this.start.x, this.start.y);
+		ctx.lineTo(this.end.x, this.end.y);
+		ctx.lineJoin = 'miter';
+		ctx.stroke();
+		ctx.restore(); 
+	   
+	} 
+   var line=new createjs.Brush({
+				id:opt.id,
+				name:opt.name,
+				start:opt.start,
+				end:opt.end,
+				cursor:"pointer",
+				strokeStyle:'#e64646',
+				fillStyle:'#ffe1e1',
+				 listeners:{
+				  
+				  'click':function(e){
+					 console.log('output_x',this.name)
+				  }
+				 }, 
+				draw:drawLine
+			  });	
+  return line;			  
+}
+
+function shadow(ctx){
+    ctx.shadowOffsetX = 2;
+    ctx.shadowOffsetY = 2;
+    ctx.shadowColor = 'rgba(100,100,100,0.2)';
+    ctx.shadowBlur = 3;
+   
+}
+var BrushLine=function(ctx,arg){
+    ctx.save(); 
+	ctx.beginPath();
+	ctx.globalCompositeOperation=arg.globalCompositeOperation;
+	ctx.strokeStyle = arg.strokeStyle||'#d98d4f';
+	ctx.lineWidth = 4;
+  	ctx.moveTo(arg.start.x, arg.start.y);
+    ctx.lineTo(arg.end.x, arg.end.y);
+    ctx.lineJoin = 'miter';
+	ctx.stroke();
+	ctx.restore(); 
+};
+
+function drawText(ctx,text){
+    ctx.save();
+    ctx.fillStyle="#fff";
+    ctx.font="italic 14px sans-serif";
+    ctx.textBaseline="middle"
+    ctx.textAlign="center";
+    ctx.fillText(text,this.postX+this.width/2, this.postY+this.height/2);
+    ctx.restore();
+}
+function drawIcon(ctx){
+    
+	ctx.save(); 
+	ctx.scale(this.scaleX,this.scaleY);
+	ctx.drawImage(iconObj, 0, 0);
+	ctx.restore(); 
+} 
+function drawCircle(ctx){
+       //
+       //console.log('drawCircle ',this.fillStyle)
+       ctx.save(); 
+	   ctx.beginPath();
+	   //ctx.setTransform(1, 0, 0, 1, 0, 0);
+	   //ctx.translate(this.x,this.y); 
+	   ctx.arc(0,0,this.radius,0*Math.PI,2*Math.PI)
+       ctx.fillStyle = this.fillStyle;
+       ctx.fill();
+       ctx.strokeStyle =this.strokeStyle;
+       ctx.stroke();
+	  // ctx.closePath();
+	   ctx.restore(); 
+	  
+
+}
+function drawRoundedRect(ctx) {
+   	ctx.save(); 
+	shadow(ctx)
+	ctx.fillStyle = this.fillStyle;
+    ctx.strokeStyle = '#d98d4f';
+	ctx.strokeRect(0,0, this.width,this.height);
+	ctx.fillRect(0,0, this.width,this.height);
+	ctx.restore(); 
+	
+	ctx.save(); 
+	ctx.beginPath();
+	ctx.strokeStyle = '#d98d4f';
+	ctx.lineWidth = 4;
+  	ctx.moveTo(0, 0);
+    ctx.lineTo(0, this.height);
+    ctx.lineJoin = 'miter';
+	ctx.stroke();
+	ctx.restore(); 
+	
+	ctx.save();
+	ctx.beginPath();
+    ctx.fillStyle="#3c3c3c";
+    ctx.font="normal bolder 10px icon";
+    ctx.textBaseline="middle"
+    ctx.textAlign="center";
+    ctx.fillText('是否订阅公众号',this.width/2,15);
+    ctx.restore();
+	
+	ctx.save();
+	ctx.beginPath();
+    ctx.fillStyle="#c8c8c8";
+    ctx.font="normal bolder 10px icon";
+    ctx.textBaseline="middle"
+    ctx.textAlign="center";
+    ctx.fillText('请双击开始设置',this.width/2,35);
+    ctx.restore();
+	
+	ctx.save(); 
+	ctx.scale(this.scaleX,this.scaleY);
+	ctx.drawImage(iconObj,0,0,30,30,0,0,30,30);
+	ctx.restore(); 
+	//console.log('-------------------drawRoundedRect',this.name+' '+this.x+' '+this.y)
+	
+	 
+}
+function  drawCloseBtn(ctx){
+    
+   	ctx.save(); 
+	ctx.beginPath();
+	ctx.fillStyle = this.fillStyle;
+    ctx.fillRect(0,0, this.width,this.height);
+	ctx.restore(); 
+	ctx.save();
+    ctx.fillStyle="#d98d4f";
+    ctx.font="normal bolder 10px icon";
+    ctx.textBaseline="middle"
+    ctx.textAlign="center";
+    ctx.fillText('×',this.width/2,this.height/2);
+    ctx.restore();
+}
+function createNode(id,x,y){
+    var prefix=id;
+	var node=new createjs.BrushBox({
+	id:prefix+'_node',
+	prefix:prefix,
+	name:prefix+'_node',
+	   groupX:x,
+	   groupY:y
+	});
+    var roundedRect=new createjs.Brush({
+    name:prefix+'_roundedRect_node',
+	id:prefix+'_roundedRect_node',
+    groupX:0,
+	groupY:0,
+	z:prefix,
+	//scaleX:.9,
+	//scaleY:.9,
+	width:170,
+	height:50,
+	fillStyle:'#fafafa',
+	draw:drawRoundedRect,
+	listeners:{
+	  'pressmove':function(e){
+	        this.parent.groupX = e.stageX + this.offset.x;
+			this.parent.groupY = e.stageY + this.offset.y;
+			//console.log(this.parent)
+			update = true;
+		
+	  },
+	  'rollover':function(e){
+	    //console.log('mouseover:'+this.name)
+		//console.log('mouseover:'+this.parent.name)
+		//console.log(this.parent.findChildByName(this.parent.prefix+'_closeBtn'))
+		this.parent.findChildByName(this.parent.prefix+'_closeBtn').visible=true;
+		update=true;
+	   //  this.getChild(this.id+'_closeBtn').visible=true;
+	  },
+	  'rollout':function(e){
+	     //console.log('mouseout:'+this.name)
+	   	 this.parent.findChildByName(this.parent.prefix+'_closeBtn').visible=false;
+		 update=true;
+		
+	  },
+	  'dblclick':function(e){
+	    console.log('dblclick:'+this.name)
+		
+	  },
+	  'mouseup':function(e){
+	    
+		
+	  },
+	  'mousedown':function(e){
+	    // console.log('mousedown',e)
+	    // console.log('mousedown',this)
+		 //this.parent.addChild(this);
+		 this.offset = {x: this.x - e.stageX, y: this.y - e.stageY};
+		 //console.log('mousedown',this.offset)
+		 //console.log('mousedown',this.x+' '+this.y)
+		 //console.log('mousedown',e)
+		 update = true;
+	  }
+	  ,
+	   'click':function(e){
+	      console.log(this.name)
+	   }
+	}
+	
+  });
+
+  var closeBtn=new createjs.Brush({
+    id:prefix+'_closeBtn',
+	name:prefix+'_closeBtn',
+	groupX:152,
+	groupY:0,
+    width:18,
+	height:18,
+	fillStyle:'#d9e6f3',
+	draw:drawCloseBtn,
+	visible:true,
+	cursor:'pointer',
+	listeners:{
+	  'rollover':function(e){
+	     this.visible=true;
+	     update=true;
+		
+	  },
+	  'rollout':function(e){
+	      this.visible=false;
+	       update=true;
+		//  stage.render();
+	  },
+	  'click':function(e){
+	     console.log(container.removeChild(this.parent))
+		 update=true;
+	  }
+	}
+  });
+
+  var input=new createjs.Brush({
+    id:prefix+'_input',
+	name:prefix+'_input',
+	groupX:85,
+	groupY:0,
+	radius:6.5,
+	strokeStyle:'#d8d8d8',
+	fillStyle:'#fafafa',
+   	draw:drawCircle,
+	listeners:{
+	  'mouseover':function(e){
+	    console.log('mouseover',this.name)
+		lineEndName=this.name;
+		
+	  },
+	  'mouseout':function(e){
+	      console.log('mouseover',this.name)
+		  lineEndName=null;
+		//  stage.render();
+	  },
+	  'click':function(e){
+	     console.log('mouseover',this.name)
+	  }
+	}
+  });
+  var output_y=new createjs.Brush({
+    id:prefix+'_output_y',
+	name:prefix+'_output_y',
+	groupX:60,
+	groupY:50,
+	radius:6.5,
+	strokeStyle:'#65bb43',
+	fillStyle:'#dcffce',
+     listeners:{
+	  'click':function(e){
+	     console.log("output_y",this.name)
+	  },
+	  'pressup':function(e){
+	    stage.update();
+		if(lineEndName){
+		
+		  var prefix=this.parent.name;
+		  var startx=this.x,starty=this.y,endx=e.stageX,endy=e.stageY;
+		  var line=createLine({
+		   start:{x:startx,y:starty},
+		   end:{x:endx,y:endy},
+		   id:prefix+'_line',
+		   name:prefix+'_line',
+		 });
+		 console.log("isCreateLineisCreateLineisCreateLineisCreateLine",{
+		   start:{x:startx,y:starty},
+		   end:{x:endx,y:endy},
+		   id:prefix+'_line',
+		   name:prefix+'_line',
+		 })
+		  container.addChildAt(line,0);
+		  update=true;
+		}
+	   
+	  },
+	  'pressmove':function(e){
+	     console.log("pressmove",this.name)
+	     console.log("-----",e)
+		 var startx=this.x,starty=this.y,endx=e.stageX,endy=e.stageY;
+		 stage.update();
+		 BrushLine(stage.canvas.getContext("2d"),{
+		   start:{x:startx,y:starty},
+		   end:{x:endx,y:endy},
+		   globalCompositeOperation:'destination-over'
+		 })
+		
+	
+		
+	
+	   }
+	},
+    draw:drawCircle
+  });
+  var output_x=new createjs.Brush({
+    id:prefix+'_output_x',
+	name:prefix+'_output_x',
+	groupX:120,
+	groupY:50,
+	radius:6.5,
+	strokeStyle:'#e64646',
+	fillStyle:'#ffe1e1',
+	 listeners:{
+	  'pressup':function(e){
+	    console.log("mouseup",this.name)
+	    update=true;
+	  },
+	  'click':function(e){
+	    console.log('output_x',this.name)
+	  }
+	 }, 
+   	draw:drawCircle
+  });
+ // node.addChild(roundedRect,closeBtn,icon,input,output_y,output_x)
+  node.addChild(roundedRect,input,closeBtn,input,output_y,output_x);
+  return node;
+
+}
+function init() {
+	//examples.showDistractor();
+	// create stage and point it to the canvas:
+	canvas = document.getElementById("cas");
+	stage = new createjs.Stage(canvas);
+
+	// enable touch interactions if supported on the current device:
+	createjs.Touch.enable(stage);
+
+	// enabled mouse over / out events
+	stage.enableMouseOver(10);
+	stage.mouseMoveOutside = true; // keep tracking the mouse even when it leaves the canvas
+
+	// load the source image:
+	iconObj= image = new Image();
+	image.src = '../../images/icon1.gif';
+	image.onload = handleImageLoad;
+}
+
+function stop() {
+	createjs.Ticker.removeEventListener("tick", tick);
+}
+
+function handleImageLoad(event) {
+	var image = event.target;
+	var bitmap;
+	container = new createjs.Container();
+	
+	stage.addChild(container);
+    
+	
+    	var num= 4;
+	   while(num--){
+	      var node= createNode(num,canvas.width * Math.random(),canvas.height * Math.random())
+		  container.addChild(node);
+	   }
+
+	//examples.hideDistractor();
+	createjs.Ticker.addEventListener("tick", tick);
+}
+
+function tick(event) {
+	// this set makes it so the stage only re-renders when an event handler indicates a change has happened.
+	if (update) {
+		update = false; // only update once
+		stage.update(event);
+	}
+}
+init();
+</script>
+</body></html>

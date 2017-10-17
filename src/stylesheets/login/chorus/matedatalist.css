@@ -1,0 +1,36 @@
+.matedatalist-panel{
+     border: 1px solid #dbdbdb;
+     border-radius: 5px !important;
+     margin: 8px 0;
+     padding: 0 !important;
+     overflow: hidden;
+}
+.matedatalist-panel-title{
+         height: 55px !important;
+         line-height: 55px !important;
+         vertical-align: middle;
+         background-color: #e4eaec;
+         padding: 0 !important;
+}
+.matedatalist-panel-title .text{
+     display: inline-block;
+     font-size: 18px;
+     color: #58666e;
+     padding-right: 10px;
+     height: 30px !important;
+     line-height: 30px !important;
+     vertical-align: middle;
+}
+.matedatalist-panel-title .btn{
+         display: inline-block;
+         cursor: pointer;
+         background: #3b3f4e;
+         color: #fff;
+         border-radius: 3px !important;
+         font-size: 12px;
+}
+.matedatalist-panel-row{
+      height: 20px;
+      line-height: 20px !important;
+      font-size: 13px;
+}

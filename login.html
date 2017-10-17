@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en" class="no-js">
+    <head>
+        <meta charset="utf-8">
+        <title>bluesharp 登陆</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <meta name="description" content="">
+        <meta name="author" content="">
+        <style type="text/css">
+            .msg-err{
+                color: red;
+            }
+            .msg-info{
+                color: #fdfdfd;
+            }
+        </style>
+        <link rel="stylesheet" href="/dist/stylesheets/login/assets/css/style.css">
+    </head>
+
+    <body style=" background-color: #61c4f3; background-image: url(/dist/stylesheets/login/assets/img/backgrounds/1.jpg); background-size:cover;">
+        <div class="page-container">
+            <div style="font-size: 24px;"><h1 style="display: inline-block;">Bluesharp</h1>  <h2  style="font-size: 23px;display: inline-block;">一站式数据服务平台</h2></div>
+            <form action="" method="post">
+                <input type="text" id="username" name="username" class="username" placeholder="用户名">
+                <input type="password" id="password"  name="password" class="password" placeholder="密码">
+                <button type="button"  onclick="doSubmit()">登&nbsp;&nbsp;&nbsp;&nbsp;陆</button>
+                <div class="error"><span>+</span></div>
+            </form>
+            <div class="connect">
+                <div  style="margin-bottom: 10px;text-shadow:0;" id="errMsg" class="msg-err msg-info"> </div>
+                <p>2016 © Chorus 融数金服.</p>
+            </div>
+        </div>
+        <!-- Javascript -->
+
+        <script src="/dist/js/jquery/dist/jquery.min.js"></script>
+        <script src="/dist/stylesheets/login/assets/js/rsatool.js"></script>
+        <script src="/dist/stylesheets/login/assets/js/scripts.js"></script>
+        <script type="text/javascript">
+            $(document).keyup(function (e) {
+                if (e.keyCode == 13) {
+                    doSubmit()
+                }
+            });
+            var jpgnum=1;
+            setInterval(function () {
+                if(jpgnum<3)
+                {jpgnum++;}
+                else
+                {
+                    jpgnum=1;
+                }
+                document.body.style.backgroundImage ='url(/dist/stylesheets/login/assets/img/backgrounds/'+jpgnum+'.jpg)';
+            },5000);
+        </script>
+    </body>
+</html>
+

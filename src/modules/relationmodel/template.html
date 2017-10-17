@@ -1,0 +1,59 @@
+<div class="chorus-relation-model">
+    <nav-bar :nav-list="navlist" style="margin-bottom: 10px;"></nav-bar>
+    <div class="chorus-toolbar">
+        <div class="toolbar-l" style=" clear: both;">
+            <div class="chorus-form-field" style="height:28px;display: inline-block; clear: both;">
+                <ad-input-edit style="margin:3px 10px;width: 180px;line-height:28px;float: left;"
+                               v-model="relationName"
+                               placeholder="按关系名称搜索"
+                               :small="true"
+                               maxlength="20"
+                               icon="ion-ios-search"></ad-input-edit>
+                <input class="chorus-button admin-small" style="float: left;" type="button" value="搜索" @click="fetchData(1)">
+            </div>
+        </div>
+        <div class="toolbar-r">
+            <button class="button admin-small" :disabled="showCreateFormBtnDisabled" @click="showCreateForm">新建关系模型</button>
+        </div>
+    </div>
+    <div class="chorus-grid-wrapper chorus-grid">
+        <table class="admin-table admin-striped data-table-list">
+            <thead>
+            <tr>
+                <th>关系ID</th>
+                <th>关系编码</th>
+                <th>A-B关系名称</th>
+                <th>描述</th>
+                <th>实体A</th>
+                <th>实体B</th>
+                <th>所有者</th>
+                <th>更新时间</th>
+                <th>操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr v-if="datalist&&datalist.length==0">
+                <td  :colspan="9" style="height: 30px;line-height: 30px;text-align: center">暂无数据</td>
+            </tr>
+            <tr v-for="(entry,index) in datalist" v-else >
+                <td>{{entry.id}}</td>
+                <td>{{entry.relationCode}}</td>
+                <td>{{entry.relationName}}</td>
+                <td>{{entry.relationDesc}}</td>
+                <td>{{entry.relationStart}}</td>
+                <td>{{entry.relationEnd}}</td>
+                <td>{{entry.userName}}</td>
+                <td>{{showDateTime(entry.createTime)}}</td>
+                <td><button class="admin-small" @click="showModifyForm(entry)">编辑</button></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div  style="text-align: right;">
+        <paginator :total-count="totalCount" :page-size="pageSize" :current-page="currentPage"  @toggle-page="togglePage"></paginator>
+    </div>
+    <!--创建-->
+    <create-modal @refresh="refreshList" :open="createFormShow" @close="createCloseEvent"  :property-datatype-options="propertyDatatypeOptions"></create-modal>
+    <!--修改-->
+    <modify-modal @refresh="refreshList" :relation-id="currentRelationId" :open="modifyFormShow" @close="modifyCloseEvent"  :property-datatype-options="propertyDatatypeOptions"></modify-modal>
+</div>

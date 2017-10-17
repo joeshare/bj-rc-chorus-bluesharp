@@ -1,0 +1,113 @@
+/**
+ * Created by AnThen on 2017-5-3.
+ */
+/**
+ * Created by AnThen on 2017-3-3.
+ */
+import {getCenterVertexs,
+    getCircleArr,
+    getCenterPointAreaRadiusByNum,
+    setUpdateStatus,
+    setCanvasScale,
+    getCanvasScale,
+    setCenterVertexPosition,
+    setSubVertexPosition} from '../utils/chartDataUtil.js'
+import CONSTANT from 'Utils/constant'
+import adminRadio from 'adminUI/components/admin-radio'
+import {canvasModel} from '../models/canvasModel.js'
+import {createPoint} from '../models/pointModel.js'
+import {createEdge} from '../models/edgeModel.js'
+export default {
+    name: 'chorus-query-visualization-chart',
+    components: {
+
+    },
+    props: {
+        chartData: {
+            default: {}
+        }
+    },
+    data () {
+        let _this =this;
+        return {
+            propertiesShow:true,
+            statisticsShow:true,
+            settingShow:true,
+            canvasWidth:0,
+            canvasHeight:0,
+            propertyStyle:{
+                width:'288px',
+                display:'block',
+                height:0
+            }
+        }
+    },
+    computed: {
+    },
+    methods: {
+        settingsRadios(settings){
+            let arr=[];
+            settings.forEach(s=>{
+                arr.push({
+                    value:s.code,
+                    text:s.name
+                })
+            })
+          return arr;
+        },
+        radiosClick(v){
+            if(this.objectType=="vertex"){//点
+                canvasModel.setVertexLabelCode(v)
+                setUpdateStatus(true)
+            }else{
+
+            }
+        },
+        renderCanvas(nodeMaps){
+            let canvas=canvasModel.canvas;
+            console.log('renderCanvas',nodeMaps)
+            let centerVertexs=getCenterVertexs(nodeMaps);
+            console.log(centerVertexs.length)
+            let scale=1;
+            let centerAreaRadius=getCenterPointAreaRadiusByNum(centerVertexs.length,canvas)
+            let circleArr=getCircleArr(canvas,centerAreaRadius,scale)
+            console.log('centerAreaRadius',centerVertexs.length,canvas,centerAreaRadius,circleArr)
+            console.log('centerAreaRadius,circleArr',circleArr)
+            let diff=centerVertexs.length-circleArr.length;
+            while(diff>0){
+                scale+=0.1;
+                circleArr= getCircleArr(canvas,centerAreaRadius,scale)
+                diff=centerVertexs.length-circleArr.length;
+            }
+            setCanvasScale(1/scale)
+            canvasModel.setScale(getCanvasScale());
+            let [view]=[this];
+            setCenterVertexPosition(nodeMaps,circleArr)
+            setSubVertexPosition(nodeMaps)
+            console.log(nodeMaps)
+            canvasModel.load([createEdge({nodeMaps,canvas,view}),createPoint({nodeMaps,canvas,view})])
+            console.log(canvasModel.container.children)
+        },
+       subContentShowToggle(type){
+          this[type]=!this[type];
+       },
+
+       propertyPanelShow(flag){
+           let canW,pDisplay="block";
+          if(flag){
+              canW=$('.chorus-main').width()-310;
+          }else{
+              canW=$('.chorus-main').width()-10;
+              pDisplay='none'
+          }
+          this.canvasWidth=canW;
+          this.propertyStyle.display=pDisplay;
+       }
+    },
+    created() {
+        console.log($('.chorus-main').width())
+        this.canvasWidth=$('.chorus-main').width()-310;
+        this.canvasHeight=this.canvasWidth*0.7,
+        this.propertyStyle.height =`${this.canvasHeight}px`;
+    }
+}

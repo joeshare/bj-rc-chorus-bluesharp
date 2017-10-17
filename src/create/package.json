@@ -1,0 +1,12 @@
+{
+  "name": "canvas",
+  "version": "1.0.0",
+  "description": "web",
+  "main": "index.js",
+  "scripts": {
+    "test": "test",
+	"start": "node app.js"
+  },
+  "author": "llj",
+  "license": "ISC"
+}

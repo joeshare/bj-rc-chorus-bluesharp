@@ -1,0 +1,116 @@
+/**
+ * Created by AnThen on 2017-3-2.
+ */
+var adMenu =require('adminUI/components/admin-menu');
+function configComponent(Vue){
+    Vue.component("nav-menu",{
+        template:'<div><ad-menu :menu-items="menus" @ad-menu-select="link"></ad-menu></div>',
+        mounted: function () {
+            console.log("-mounted----",_.navMenus.get())
+            //this.menus = this.getMenuList()
+            this.menus = _.navMenus.get()
+        },
+        data () {
+            return {
+                menus: []
+            }
+        },
+        methods: {
+            link:function(l){
+                this.$router.push(l.url)
+            },
+            getMenuList: function () {
+                // mock data
+                return [
+                        {
+                        'text': '项目管理',
+                        'url': '',
+                        'iconClass':'ion-hammer',
+                        'collapse':false,
+                        'children': [{
+                            'text': '项目管理',
+                            'url': '/projectmanagement',
+                            'collapse':false,
+                            'children': []
+                           },
+                            {
+                                'text': '成员管理',
+                                'url': '/membermanagement',
+                                'collapse':false,
+                                'children': []
+                            },
+                            {
+                                'text': '资源配置',
+                                'url': '/resourceallocation',
+                                'collapse':false,
+                                'children': []
+                            },
+                            {
+                                'text': '外部资源配置',
+                                'url': '/externalresource',
+                                'collapse':false,
+                                'children': []
+                            }
+                        ]
+                    },
+                    {
+                        'text': '数据管理',
+                        'url': '',
+                        'iconClass':'ion-soup-can',
+                        'collapse':false,
+                        'children': [{
+                            'text': '数据表管理',
+                            'url': '/datatablemanagement',
+                            'collapse':false,
+                            'children': []
+                        },
+                            {
+                                'text': '元数据查询',
+                                'url': '/metadatamanagement',
+                                'collapse':false,
+                                'children': []
+                            },
+                            {
+                                'text': '数据权限管理',
+                                'url': '/dataaccessmanagement',
+                                'collapse':false,
+                                'children': []
+                            },
+                            {
+                                'text': '图数据管理',
+                                'url': '/graphdatamanagement',
+                                'collapse':false,
+                                'children': []
+                            }
+                        ]
+                    },
+                    {
+                        'text':'数据分析',
+                        'iconClass':'ion-paper-airplane',
+                        'url': '',
+                        'collapse':false,
+                        'children':[
+
+                            {
+                                'text': '数据图谱',
+                                'url': '/datachartquery',
+                                'collapse':false,
+                                'children': []
+                            },
+                            {
+                                'text': '数据实验室',
+                                'url': '/datalaboratory',
+                                'collapse':false,
+                                'children': []
+                            }
+                        ]
+                    }
+                ]
+            }
+        },
+        components: {
+            adMenu
+        }
+    });
+}
+module.exports = configComponent;

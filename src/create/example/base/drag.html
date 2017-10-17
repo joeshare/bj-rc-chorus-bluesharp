@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<!-- saved from url=(0072)http://whxaxes.github.io/canvas-test/src/Funny-demo/transform/demo1.html -->
+<html><head lang="en"><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <title>拖拽</title>
+    <style>
+        body{-moz-user-select: none;}
+        #cas{
+            position: absolute;
+            border: 1px solid #999;
+        }
+		canvas,img{
+		   image-rendering: optimizeSpeed;             /* Older versions of FF          */
+		   image-rendering: -moz-crisp-edges;          /* FF 6.0+                       */
+		   image-rendering: -webkit-optimize-contrast; /* Safari                        */
+		   image-rendering: -o-crisp-edges;            /* OS X & Windows Opera (12.02+) */
+		   image-rendering: pixelated;                 /* Awesome future-browsers       */
+		   -ms-interpolation-mode: nearest-neighbor;   /* IE                            */
+		}
+    </style>
+</head>
+<body onselectstart="return false">
+<div style="width:1000px;height:500px;">
+<canvas id="cas" width="1000" height="500">
+    亲，你滴浏览器太out啦，换一个吧
+</canvas>
+</div>
+<script src="../../js/easeljs-0.8.2.combined.js"></script>
+<script src="../../js/easeljs-brush.plugin.js"></script>
+<script>
+var canvas ,stage ,container,update=false;
+
+function drawCircle(ctx){
+      
+       ctx.save(); 
+	   ctx.beginPath();
+	   ctx.arc(0,0,this.radius,0*Math.PI,2*Math.PI)
+       ctx.fillStyle = this.fillStyle;
+       ctx.fill();
+       ctx.strokeStyle =this.strokeStyle;
+       ctx.stroke();
+	   ctx.restore(); 
+	  
+
+}
+function createSpirits(i){
+   var brush = new createjs.Brush({
+			name:'brush'+i,
+			cursor:"pointer",
+			fillStyle:'#f4f4f4',
+			strokeStyle:"#ccc",
+			draw:drawCircle,
+			radius:30,
+			x:canvas.width * Math.random() | 0,
+			y:canvas.height * Math.random() | 0,
+			listeners:{
+				'pressmove':function(e){
+					this.x = e.stageX + this.offset.x;
+					this.y = e.stageY + this.offset.y;
+					//console.log(this.parent)
+					update = true;
+				
+			  },
+	  		  'mousedown':function(e){
+			      container.addChild(this)
+			     this.offset = {x: this.x - e.stageX, y: this.y - e.stageY};
+				 update = true;
+			  }
+			  
+			}
+		
+		
+		});	
+		return brush;
+
+}
+
+function ready(){ 
+    var len=30;
+    while(len--){
+	 
+	   container.addChild(createSpirits(len));
+	}
+	stage.update();
+}
+function tick(event) {
+	// this set makes it so the stage only re-renders when an event handler indicates a change has happened.
+	if (update) {
+		update = false; // only update once
+		stage.update(event);
+	}
+}
+function init(){
+  //examples.showDistractor();
+	// create stage and point it to the canvas:
+	canvas = document.getElementById("cas");
+	stage = new createjs.Stage(canvas);
+	container = new createjs.Container();
+	// enabled mouse over / out events
+	stage.enableMouseOver(10);
+	stage.addChild(container);
+	stage.mouseMoveOutside = true; // keep tracking the mouse even when it leaves the canvas
+	createjs.Ticker.addEventListener("tick", tick);
+	ready();
+}
+init();
+</script>
+</body></html>

@@ -1,0 +1,144 @@
+<div class="tag-management">
+    <nav-bar :nav-list="navlist" style="margin-bottom: 10px;"></nav-bar>
+    <div class="admin-grid-container">
+        <div  class="admin-grid-cell-3" style="min-height: 100%;  display: inline-block; height: 100%; max-height: 750px;overflow: auto; padding-right:15px;">
+            <div v-show="treedata.length>0&&treedata[0].id">
+                <div @click="createRootTree" style="cursor: pointer; color:#0e9ee2;display:inline-block;font-size: 14px;  text-align: right;  width: 100%;padding:10px 0px;min-width:250px;">
+                    创建根分类
+                </div>
+               <Tree :list.sync="treedata" :func="nodeClick" :seleted="seletedClick" :expand="null"  :is-open="true"></Tree>
+            </div>
+            <div v-show="treedata.length==0||!treedata[0].id">
+                <div  style="display:inline-block;width: 100%;margin-top: 15%; height: 400px;">
+
+                    <div v-show="showrootcreate" style=" font-size: 18px;  text-align: center; vertical-align: middle;margin-top: 30%;">
+                        <input  class="chorus-button admin-small"  type="button" :value="treetitle"  @click="createRootTree">
+                    </div>
+                    <div style=" font-size: 14px;  text-align: center; vertical-align: middle;margin-top: 10%; color:#a0b1b1;">{{treedesc}}</div>
+                </div>
+            </div>
+        </div>
+        <div v-show="currentTag.id"  class="admin-grid-cell-9" style="border-left: 1px solid #cecbce; height: 100%;display: inline-block; ">
+            <div style="display:inline-block; font-size: 14px; border-bottom: 1px solid #cecbce;  width: 100%;padding:5px 10px 5px 10px;">
+                <div style="display: inline-block;line-height: 26px; text-align: center; vertical-align: middle;">{{currentTag.name}}：{{currentTag.tagDec}}</div>
+                  <input  class="chorus-button admin-small" style="float: right;" type="button" value="新建标签项"  @click="createtagvlaue()">
+            </div>
+
+            <div class="chorus-grid">
+                <table class="admin-table  admin-striped">
+                    <thead>
+                    <tr>
+                        <th style="width: 48%;">标签选项</th>
+                        <th style="width: 18%;">覆盖人数</th>
+                        <th style="width: 15%;text-align: center !important;">操作</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr v-if="!datahsy||datahsy.length==0">
+                        <td  :colspan="3" style="height: 30px;line-height: 30px;text-align: center">暂无数据</td>
+                    </tr>
+                    <tr v-for="entry in datahsy" v-else >
+                        <td >{{entry.tagValue}}</td>
+                        <td>暂无</td>
+                        <td style="width: 15%;text-align: center !important;color:#0e9ee2;cursor: pointer;" @click="dropTagvalue(entry)">删除</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div  style="text-align: right;">
+                <paginator :total-count="totalCounthsy" :page-size="pageSizehsy" :current-page="currentPagehsy"  @toggle-page="togglePagehsy"></paginator>
+            </div>
+        </div>
+        <div  v-show="!currentTag.id"   class="admin-grid-cell-9" style="border-left: 1px solid #cecbce; height: 100%;display: inline-block; ">
+            <div style="display:inline-block;width: 100%;margin-top: 15%;">
+                <div style=" text-align: center; vertical-align: middle;">
+                    <img src="../../images/notag.png">
+                </div>
+                <div style=" font-size: 18px;  text-align: center; vertical-align: middle;margin-top: 4%;">暂无标签</div>
+                <div style=" font-size: 14px;  text-align: center; vertical-align: middle;margin-top: 2%; color:#a0b1b1;">请在分类菜单中选择一个分类进行查看</div>
+            </div>
+        </div>
+    </div>
+
+    <ad-modal
+            height="234px"
+            width="440px"
+            :title="modalTitle"
+            :display="modalDisplay"
+            :buttons="modalButtons"
+            @admin-modal-off="() => {modalDisplay = false }"
+            @admin-modal-cancel="() => {modalDisplay = false }"
+    >
+        <div  style="padding: 10px;">
+            <ad-input style="width: 100%"
+                      label="分类名称："
+                      v-model="rootname"
+                      placeholder=""
+                      maxlength="20"
+                      :warnings="rootnameWarnings"
+                      @keyup="clearClassWarn"
+            ></ad-input>
+        </div>
+
+    </ad-modal>
+
+    <ad-modal
+            height="334px"
+            width="440px"
+            :title="tagTitle"
+            :display="tagDisplay"
+            :buttons="tagButtons"
+            @admin-modal-off="() => {tagDisplay = false }"
+            @admin-modal-cancel="() => {tagDisplay = false }"
+    >
+        <div  style="padding: 10px;">
+            <ad-input style="width: 100%"
+                      label="标签名称："
+                      v-model="tagname"
+                      placeholder=""
+                      maxlength="20"
+                      :warnings="tagnameWarnings"
+                      @keyup="clearTagWarn"
+            ></ad-input>
+        </div>
+        <div  style="padding: 10px;">
+            <ad-input style="width: 100%"
+                      label="标签描述："
+                      maxlength="20"
+                      type="textarea"
+                      v-model="tagdesc"
+                      placeholder=""
+                      :warnings="tagdescWarnings"
+            ></ad-input>
+        </div>
+    </ad-modal>
+
+    <ad-modal
+            height="334px"
+            width="440px"
+            :title="tagvalueTitle"
+            :display="tagvalueDisplay"
+            :buttons="tagvalueButtons"
+            @admin-modal-off="() => {tagvalueDisplay = false }"
+            @admin-modal-cancel="() => {tagvalueDisplay = false }"
+    >
+        <div  style="padding: 10px;">
+            <ad-input style="width: 100%"
+                      label=""
+                      v-model="tagvaluename"
+                      placeholder="请输入标签项，按回车添加"
+                      :warnings="tagnamevalueWarnings"
+                      @keyup="addTagvalue"
+                      maxlength="15"
+            ></ad-input>
+        </div>
+        <div  style="padding: 10px;">
+            <ul>
+                <li v-for="data in tagvaluelist"  @dblclick="deleteTagvalue(data)" class="tagvalue-li">
+                    <i class="ion-close-circled tagvalue-i" @click="deleteTagvalue(data)"></i>
+                  <span>{{data}}</span>
+                </li>
+            </ul>
+        </div>
+    </ad-modal>
+</div>

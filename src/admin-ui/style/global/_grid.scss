@@ -1,0 +1,55 @@
+// Author: Awey
+// email: chenwei@rongcapital.cn
+// github: https://github.com/BboyAwey
+// blog: http://www.jianshu.com/u/3c8fe1455914
+
+// Modifier:
+
+// global grid system
+// container
+.admin-grid-container {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+// 12 sizes of grid cell
+@for $i from 1 through 12 {
+  .admin-grid-cell-#{$i} {
+    display: block;
+    flex: 0 0 $i/12*100%;
+  }
+}
+// simple offset rule
+@for $i from 1 through 12 {
+  .admin-offset-#{$i} {
+    margin-left: $i/12*100%;
+  }
+}
+// // simple self adaption
+// @media screen and (max-width: 320px) {
+//   @for $i from 1 through 12 {
+//     .admin-grid-cell-#{$i} {
+//       flex: 100%;
+//     }
+//   }
+// }
+// @media screen and (max-width: 480px) {
+//   @for $i from 1 through 2 {
+//     .admin-grid-cell-#{$i} {
+//       flex: 0 0 $i/3*100%;
+//     }
+//   }
+//   @for $i from 3 through 12 {
+//     .admin-grid-cell-#{$i} {
+//       flex: 100%;
+//     }
+//   }
+//   // offset rule
+//   @for $i from 1 through 12 {
+//     @for $j from 1 through 2 {
+//       .admin-grid-cell-#{$j}.admin-offset-#{$i} {
+//         margin-left: $i/12*100%;
+//       }
+//     }
+//   }
+// }

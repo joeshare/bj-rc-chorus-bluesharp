@@ -1,0 +1,58 @@
+// Author: Awey
+// email: chenwei@rongcapital.cn
+// github: https://github.com/BboyAwey
+// blog: http://www.jianshu.com/u/3c8fe1455914
+
+// Modifier:
+
+// table
+// basic表格
+.admin-table {
+  margin: 8px 0;
+  // border-radius: 4px;
+  // the border around table
+  // every tr except the last one in tbody has a bottom line
+  tbody>tr,
+  tfoot>tr:not(:last-child),
+  thead>tr {
+    border-bottom: 1px solid $grayBrighten15;
+  }
+  th, td {
+    padding: 8px 12px;
+    text-align: left;
+  }
+  th {
+    color: $grayDarken25;
+    font-size: $normal;
+  }
+  td {
+    color: $grayDarken35;
+    font-size: $normal;
+  }
+  tfoot td:only-child {
+    color: $grayDarken25;
+    font-size: $small;
+    text-align: right;
+  }
+  tfoot td:not(:only-child) {
+    color: $grayDarken25;
+  }
+  tbody > tr:hover {
+    background-color: $grayBrighten20;
+  }
+}
+// stripe table
+.admin-striped {
+  tbody>tr:nth-child(2n) {
+    background-color: rgba($grayBrighten20, .3);
+  }
+}
+.admin-bordered {
+  border: 1px solid $grayBrighten15;
+  th:not(:last-child), td:not(:last-child) {
+    border-right: 1px solid $grayBrighten15;
+  }
+  thead > tr:last-child, tbody > tr:last-child {
+    border-bottom-color: $grayBrighten10;
+  }
+}

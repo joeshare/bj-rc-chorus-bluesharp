@@ -1,0 +1,250 @@
+@import "matedataDetail.css";
+@import "datatable.css";
+@import "matedatalist.css";
+@import "applyForm.css";
+
+@media (min-width: 517px) and (max-width: 991px) {
+  /* 768px & 991px */
+  /* Boxed Layout */
+  .page-boxed .page-header.navbar {
+    margin: auto !important;
+    padding: 0;
+  }
+  .page-boxed .page-header.navbar > .container {
+    margin: auto !important;
+  }
+}
+
+.chorus-text-left {
+	text-align:left;
+}
+.chorus-text-center {
+	text-align:center;
+}
+.chorus-text-right {
+	text-align:right;
+}
+
+.chorus-width-3per {
+	width:3%
+}
+.chorus-width-4per {
+	width:4%
+}
+.chorus-width-5per {
+	width:5%
+}
+.chorus-width-7per {
+	width:7%
+}
+.chorus-width-10per {
+	width:10%
+}
+.chorus-width-13per {
+	width:13%
+}
+.chorus-width-15per {
+	width:15%
+}
+.chorus-width-20per {
+	width:20%
+}
+.chorus-width-25per {
+	width:25%
+}
+.chorus-width-30per {
+	width:30%
+}
+.chorus-width-35per {
+	width:35%
+}
+.chorus-width-40per {
+	width:40%
+}
+.chorus-width-45per {
+	width:45%
+}
+.chorus-width-50per {
+	width:50%
+}
+.chorus-width-55per {
+	width:55%
+}
+.chorus-width-60per {
+	width:60%
+}
+.chorus-width-65per {
+	width:65%
+}
+.chorus-width-70per {
+	width:70%
+}
+.chorus-width-75per {
+	width:75%
+}
+.chorus-width-80per {
+	width:80%
+}
+.chorus-width-85per {
+	width:85%
+}
+.chorus-width-87per {
+	width:87%
+}
+.chorus-width-90per {
+	width:90%
+}
+.chorus-width-95per {
+	width:95%
+}
+.chorus-width-96per {
+	width:96%
+}
+.chorus-width-97per {
+	width:97%
+}
+.chorus-width-100per {
+	width:100%
+}
+.chorus-tab-btn-padding {
+	padding:0px 4px
+}
+.chorus-min-width-40px {
+	min-width:40px
+}
+.chorus-dropdown-text {
+    height: 14px;
+    width: 19px;
+    background: #e5e5e5;
+    border-bottom: 2px solid #CFCECE;
+    border-radius: 25px !important;
+}
+
+.chorus-modal-label {
+	text-align:right;
+	padding-top: 5px;
+}
+
+.chorus-padding-top-7px {
+	padding-top: 7px;
+}
+
+.chorus-padding-left-3px {
+    padding-left: 3px;
+}
+
+.chorus-padding-right-3px {
+    padding-right: 3px;
+}
+
+.chorus-padding-10px {
+    padding: 10px;
+}
+.chorus-padding-15px {
+    padding: 15px;
+}
+.chorus-max-width-100px {
+    max-width: 100px;
+}
+.chorus-max-width-110px {
+    max-width: 110px;
+}
+.chorus-max-width-500px {
+    max-width: 500px;
+}
+
+.chorus-margin-bottom-0px {
+	margin-bottom: 0px;
+}
+
+.chorus-margin-top-5px {
+	margin: 5px 0;
+}
+
+.chorus-padding-0px {
+	padding: 0px !important;
+}
+
+.chorus-htable-height {
+    height: 235px;
+}
+
+.chorus-htable-filed-select {
+    width: 125px;
+    font-size: 12px;
+}
+
+.chorus-htable-oper-select {
+    width: 50px;
+    font-size: 12px;
+}
+
+.chorus-text-align-left {
+	text-align: left !important;
+}
+.chorus-row-details {
+    margin-top: 3px;
+    display: inline-block;
+    cursor: pointer;
+    /* width: 14px; */
+    height: 14px;
+    color: #3175af;
+}
+
+.chorus-console-title-a {
+    float: right;
+}
+
+
+input :-webkit-autofill {
+-webkit-box-shadow : 0 0 0px 1px white inset ;
+border : 1px solid #CCC !important ;
+height : 27px !important ;
+line-height : 27px !important ;
+border-radius : 0 4px 4px 0 ;
+}
+/* process start*/
+b.process_name {color:#999999;font-size:15px;text-align:center;position:relative;text-width:145px;white-space:pre-wrap;text-overflow:ellipsis}
+.line-img {width:140px;height:10px;position:relative;top:0px;border-style:none;border-width:0px;font-size:0px}
+.col-line-img {width:10px;height:74px;border-style:none;border-width:0px;font-size:0px;position:relative;left:-5px}
+.col-line-left-img {width:10px;height:74px;border-style:none;border-width:0px;font-size:0px;position:relative;left:-70px}
+.content-img {border-style:none;border-width:0px;font-size:0px;}
+.model-img {border-style:none;border-width:0px;font-size:0px;}
+.add-img {border-style:none;border-width:0px;font-size:0px;}
+#processListTable .img-td {width:19%;}
+#processListTable .name-td {width:19%;position:relative;left:-10px;top:0px;top:-15px\9;}
+#processListTable .empty-td {width:6%}
+#processListTable .end-td {width:8%}
+#processListTable .name-end-td {width:8%;position:relative;top:0px;top:-15px\9;}
+.index_div{position: relative; z-index: 99;left:40px;top:-2px;top:-21px\9; }
+.index_p{position:absolute;left:35px;top:-22px;top:-12px\9;font-size:20px;font-style:italic;color:#999999}
+.index_img_line{width:65px;position:relative;top:-9px;}
+  	
+.r1{
+	 -moz-transform:rotate(-6deg);
+    -webkit-transform:rotate(-6deg);
+	-o-transform:rotate(-6deg);
+	filter: progid:DXImageTransform.Microsoft.Matrix(sizingMethod='auto expand', M11=0.9945219159126282, M12=0.10452846437692642, M21=-0.10452846437692642, M22=0.9945219159126282);
+}
+.r2{
+	transform: rotate(5deg); 
+	 -moz-transform:rotate(5deg);
+    -webkit-transform:rotate(5deg);
+	-o-transform:rotate(5deg);
+	filter: progid:DXImageTransform.Microsoft.Matrix(sizingMethod='auto expand', M11=0.9961947202682495, M12=-0.08715574443340301, M21=0.08715574443340301, M22=0.9961947202682495);
+}
+/* process end*/
+
+#taskCalResultDetailTable td {
+	white-space:nowrap;
+	padding:10px;
+	font-size:12px;
+}
+
+.chorus-margin-bottom-10px {
+	margin-bottom: 10px;
+}
+
+.chorus-margin-bottom-5px {
+	margin-bottom: 5px;
+}

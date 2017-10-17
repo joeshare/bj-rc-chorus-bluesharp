@@ -1,0 +1,74 @@
+<div class="chorus-query-visualization-chart">
+    <div id="chorus-query-visualization-canvas-wrapper">
+         <canvas id="chorus-query-visualization-canvas" :class='[canvasMoveUsable?"move":""]'  :width="canvasWidth"  :height="canvasHeight"></canvas>
+    </div>
+    <div id="chorus-query-visualization-chart-toolbar">
+        <i class="ion-minus-round" @click="scaleClickBtn(-0.1)"></i>
+        <i class="ion-plus-round" @click="scaleClickBtn(0.1)"></i>
+        <i  :class='["ion-arrow-move",canvasMoveUsable?"action":""]' @click="moveClickBtn"></i>
+    </div>
+    <div id="chorus-query-visualization-chart-property-wrapper" :style="propertyStyle">
+        <div class="property-title">
+            <div class="text"> </div>
+            <i class="close ion-ios-close-empty chorus-cursor-pointer" @click="propertyPanelShow(false)"></i>
+        </div>
+        <div class="properties-wrapper">
+            <div class="sub-title">
+                <i :class='["chorus-cursor-pointer",this.propertiesShow?"ion-arrow-up-b":"ion-arrow-down-b"]' @click="subContentShowToggle('propertiesShow')"></i>
+                <span class="text">Properties</span>
+            </div>
+            <div :class='["sub-content",this.propertiesShow?"":"chorus-display-none"]'>
+                <div v-if="properties&&properties.length" >
+                    <div v-for="(pro, index) in properties" class="row chorus-text-ellipsis">
+                        {{pro.name}}: {{pro.value}}
+                    </div>
+                </div>
+                <div v-else class="row">
+                    暂无数据
+                </div>
+            </div>
+        </div>
+        <div class="statistics-wrapper">
+            <div class="sub-title">
+                <i :class='["chorus-cursor-pointer",this.statisticsShow?"ion-arrow-up-b":"ion-arrow-down-b"]' @click="subContentShowToggle('statisticsShow')"></i>
+                <span class="text">Statistics</span>
+            </div>
+            <div :class='["sub-content",this.statisticsShow?"":"chorus-display-none"]'>
+                <div v-if="statisticses&&statisticses.length" >
+                    <div v-for="(pro, index) in statisticses" class="row chorus-text-ellipsis">
+                        {{pro.name}}: {{pro.value}}
+                    </div>
+                </div>
+                <div v-else class="row">
+                    暂无数据
+                </div>
+            </div>
+        </div>
+        <div class="settings-wrapper">
+            <div class="sub-title">
+                <i :class='["chorus-cursor-pointer",this.settingShow?"ion-arrow-up-b":"ion-arrow-down-b"]' @click="subContentShowToggle('settingShow')"></i>
+                <span class="text">Settings</span>
+            </div>
+            <div :class='["sub-content",this.settingShow?"":"chorus-display-none"]'>
+                <div v-if="settings&&settings.length" >
+                    <div v-if="currentHitData.isVertex">
+                        <admin-radio
+                                :radios="settingsRadios(settings)"
+                                v-model="labelCode"
+                                ></admin-radio>
+                    </div>
+                    <div v-else >
+                        <admin-checkbox
+                                :checkboxes="settingsRadios(settings)"
+                                v-model="labelCodes"
+                                ></admin-checkbox>
+                    </div>
+
+                </div>
+                <div v-else class="row">
+                    暂无数据
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

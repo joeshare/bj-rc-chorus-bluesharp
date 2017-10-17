@@ -1,0 +1,178 @@
+<div>
+    <nav-bar :nav-list="navlist" ></nav-bar>
+    <div class="chorus-toolbar">
+        <div class="toolbar-l">
+        </div>
+        <div class="toolbar-r">
+            <input class="chorus-button admin-small" type="button"  value="增加项目"  @click="createProjectModal();">
+        </div>
+    </div>
+    <div class="chorus-grid-wrapper chorus-grid">
+        <table class="admin-table admin-striped ">
+            <thead>
+            <tr>
+                <!--<td v-if="entry.status==true" v-for="(val, key) in columns"><input type="button"></td>-->
+                <th>项目名称</th>
+                <th>项目编码</th>
+                <th>项目描述</th>
+                <!--<th>项目负责人/电话</th>-->
+                <th>项目创建人</th>
+                <th style="min-width: 100px">操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr v-if="data.length==0">
+                <td  :colspan="7" style="height: 30px;line-height: 30px;text-align: center">暂无数据</td>
+            </tr>
+            <tr v-for="entry in data" v-else >
+                <!--<td v-if="entry.status==true" v-for="(val, key) in columns"><input type="button"></td>-->
+                <td :title="entry.projectName">{{entry['projectName']}}</td>
+                <td :title="entry.projectCode">{{entry['projectCode']}}</td>
+                <td :title="entry.projectDesc">{{entry['projectDesc']}}</td>
+                <!--<td :title="entry.projectDesc">{{entry['managerTelephone']}}</td>-->
+                <td :title="entry.projectDesc">{{entry['userName']}}</td>
+                <td class="project-management-opt" style="text-align: center">
+                    <input class="chorus-button admin-small"  type="button" value="详情" @click="fetchProjectModal(entry)">
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div  style="text-align: right;">
+        <ad-paginator :total-count="totalCount" :page-size="pageSize" :current-page="currentPage"  @toggle-page="togglePage($event)"></ad-paginator>
+    </div>
+    <ad-modal
+            height="434px"
+            width="440px"
+            :title="modalTitle"
+            :display="modalDisplay"
+            :buttons="modalButtons"
+            @admin-modal-off="() => {modalDisplay = false }"
+            @admin-modal-cancel="() => {modalDisplay = false }"
+            >
+        <div  style="padding: 10px;">
+            <ad-input class="project-manage-ad-input"
+                    label="项目名称："
+                    v-model="projectname"
+                    placeholder=""
+                    :warnings="projectNameWarnings"
+                    @input='inputProjectName'
+                    ></ad-input>
+        </div>
+        <div style="padding: 10px;">
+
+            <ad-input class="project-manage-ad-input"
+                    label="项目编码："
+                    v-model="projectcode"
+                    placeholder=""
+                    :warnings="projectCodeWarnings"
+                    @input='inputProjectCode'
+                   ></ad-input>
+        </div>
+        <div style="padding: 10px;">
+            <ad-input class="project-manage-ad-input"
+                    label="项目描述："
+                    type="textarea"
+                    placeholder=""
+                    v-model="projectdesc"
+                    @input='inputProjectDesc'
+                    :warnings="projectDescWarnings"
+                    ></ad-input>
+        </div>
+    </ad-modal>
+    <ad-modal
+            height="580px"
+            width="800px"
+            title="项目详情"
+            :display="infoDisplay"
+            :buttons="infoModalButtons"
+            @admin-modal-off="() => {infoDisplay = false }">
+        <!--<ad-tabs :tabs="tabs" :current-tab-id="activeTabId" :contents="tabContainers"> </ad-tabs>-->
+        <ad-tabs :tabs="tabs" :current-tab-name="activeTabId" style="height:400px">
+           <div style="padding:10px 0 0 0;" name="baseInfo" class="chorus-tabs-content" >
+               <div class="admin-grid-container">
+                   <div class="admin-grid-cell-6">
+                       <div  style="padding: 10px;">
+                           <ad-input class="project-manage-ad-input"
+                                     label="项目名称："
+                                     v-model="currentRecoder.projectName"
+                                     placeholder=""
+                                     :disabled="true"
+                                   ></ad-input>
+                       </div>
+                   </div>
+                   <div class="admin-grid-cell-6">
+                       <div style="padding: 10px;">
+                           <ad-input class="project-manage-ad-input"
+                                     label="项目编码："
+                                     v-model="currentRecoder.projectCode"
+                                     placeholder=""
+                                     :disabled="true"
+                                   ></ad-input>
+                       </div>
+                   </div>
+                   <div class="admin-grid-cell-6">
+                       <div style="padding: 10px;">
+                           <ad-input class="project-manage-ad-input"
+                                     label="项目负责人："
+                                     v-model="currentRecoder.userName"
+                                     placeholder=""
+                                     :disabled="true"
+                                   ></ad-input>
+                       </div>
+                   </div>
+                  <!-- <div class="admin-grid-cell-6">
+                       <div style="padding: 10px;">
+                           <ad-input class="project-manage-ad-input"
+                                     label="电话："
+                                     v-model="currentRecoder.managerTelephone"
+                                     placeholder=""
+                                     :disabled="true"
+                                   ></ad-input>
+                       </div>
+                   </div>-->
+                  <!-- <div class="admin-grid-cell-6">
+                       <div style="padding: 10px;">
+                           <ad-input class="project-manage-ad-input"
+                                     label="创建人："
+                                     v-model="currentRecoder.userName"
+                                     placeholder=""
+                                     :disabled="true"
+                                   ></ad-input>
+                       </div>
+                   </div>-->
+                   <div class="admin-grid-cell-6">
+                       <div style="padding: 10px;">
+                           <ad-input class="project-manage-ad-input"
+                                     label="创建时间："
+                                     v-model="currentRecoder.createTime"
+                                     placeholder=""
+                                     :disabled="true"
+                                   ></ad-input>
+                       </div>
+                   </div>
+                   <div class="admin-grid-cell-12">
+                       <div style="padding: 10px;">
+                           <ad-input class="project-manage-ad-input project-manage-project-desc"
+                                     label="项目描述："
+                                     type="textarea"
+                                     v-model="currentRecoder.projectDesc"
+                                     placeholder=""
+                                     :disabled="true"
+                                   ></ad-input>
+                       </div>
+                   </div>
+               </div>
+           </div>
+           <div name="memberInfo"  class="chorus-tabs-content">
+               <member-list  :project-id="currentRecoder.caasTopicId"></member-list>
+           </div>
+            <div name="resourceConfig"  class="chorus-tabs-content">
+                <resource-list :project-id="currentRecoder.projectId"></resource-list>
+            </div>
+            <div name="externalresource"  class="chorus-tabs-content">
+                <external-list  :project-id="currentRecoder.projectId"></external-list>
+            </div>
+        </ad-tabs>
+    </ad-modal>
+</div>

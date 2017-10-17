@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<!-- saved from url=(0072)http://whxaxes.github.io/canvas-test/src/Funny-demo/transform/demo1.html -->
+<html><head lang="en"><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <title>图像拉扯变形</title>
+    <style>
+        body{-moz-user-select: none;}
+        #cas{
+            position: absolute;
+            
+            border: 1px solid;
+        }
+        .tips{text-align: center;margin: 15px 0;}
+        .control{ text-align: center; }
+		canvas,img{
+		   image-rendering: optimizeSpeed;             /* Older versions of FF          */
+		  image-rendering: -moz-crisp-edges;          /* FF 6.0+                       */
+		  image-rendering: -webkit-optimize-contrast; /* Safari                        */
+		  image-rendering: -o-crisp-edges;            /* OS X & Windows Opera (12.02+) */
+		  image-rendering: pixelated;                 /* Awesome future-browsers       */
+		  -ms-interpolation-mode: nearest-neighbor;   /* IE                            */
+		}
+    </style>
+</head>
+<body onselectstart="return false">
+<div style="width:1000px;height:500px;">
+<canvas id="cas" width="1000" height="500">
+    亲，你滴浏览器太out啦，换一个吧
+</canvas>
+</div>
+
+<script src="../../js/easeljs-0.8.2.combined.js"></script>
+<script src="../../js/easeljs-brush.plugin.js"></script>
+<script>
+
+var canvas, stage;
+
+var mouseTarget;	// the display object currently under the mouse, or being dragged
+var dragStarted;	// indicates whether we are currently in a drag operation
+var offset;
+var update = true;
+var iconObj;
+var image;
+var maxZ=1000000;
+var container;
+var lins={};
+var lineEndName=null;
+function createLine(opt){
+   function drawLine(ctx){
+		ctx.save(); 
+		ctx.beginPath();
+		ctx.strokeStyle = '#d98d4f';
+		ctx.lineWidth = 4;
+		ctx.moveTo(this.start.x, this.start.y);
+		ctx.lineTo(this.end.x, this.end.y);
+		ctx.lineJoin = 'miter';
+		ctx.stroke();
+		ctx.restore(); 
+	   
+	} 
+   var line=new createjs.Brush({
+				id:opt.id,
+				name:opt.name,
+				start:opt.start,
+				end:opt.end,
+				cursor:"pointer",
+				strokeStyle:'#e64646',
+				fillStyle:'#ffe1e1',
+				 listeners:{
+				  
+				  'click':function(e){
+					 console.log('output_x',this.name)
+				  }
+				 }, 
+				draw:drawLine
+			  });	
+  return line;			  
+}
+function draw(ctx){
+       //console.log('draw',this)
+	   ctx.save(); 
+ 	   ctx.beginPath();
+	   ctx.arc(0,0,this.radius,0*Math.PI,2*Math.PI)
+       ctx.closePath();
+       ctx.fillStyle = this.fillStyle;//'#f4f4f4';
+       ctx.fill();
+       ctx.strokeStyle = '#ccc';
+       ctx.stroke();
+	   ctx.restore(); 
+	   //console.log('draw',this.name)
+}
+function shadow(ctx){
+    ctx.shadowOffsetX = 2;
+    ctx.shadowOffsetY = 2;
+    ctx.shadowColor = 'rgba(100,100,100,0.2)';
+    ctx.shadowBlur = 3;
+   
+}
+var BrushLine=function(ctx,arg){
+    ctx.save(); 
+	ctx.beginPath();
+	ctx.globalCompositeOperation=arg.globalCompositeOperation;
+	ctx.strokeStyle = arg.strokeStyle||'#d98d4f';
+	ctx.lineWidth = 4;
+  	ctx.moveTo(arg.start.x, arg.start.y);
+    ctx.lineTo(arg.end.x, arg.end.y);
+    ctx.lineJoin = 'miter';
+	ctx.stroke();
+	ctx.restore(); 
+};
+
+function drawText(ctx,text){
+    ctx.save();
+    ctx.fillStyle="#fff";
+    ctx.font="italic 14px sans-serif";
+    ctx.textBaseline="middle"
+    ctx.textAlign="center";
+    ctx.fillText(text,this.postX+this.width/2, this.postY+this.height/2);
+    ctx.restore();
+}
+
+function drawCircle(ctx){
+ 
+       createjs.drawCircle(ctx,Object.assign({},this))
+       createjs.drawText(ctx,Object.assign({},this))
+	  
+
+}
+
+
+function init() {
+	//examples.showDistractor();
+	// create stage and point it to the canvas:
+	canvas = document.getElementById("cas");
+	stage = new createjs.Stage(canvas);
+
+	// enable touch interactions if supported on the current device:
+	createjs.Touch.enable(stage);
+    container = new createjs.Container();
+	
+	stage.addChild(container);
+	// enabled mouse over / out events
+	stage.enableMouseOver(10);
+	stage.mouseMoveOutside = true; // keep tracking the mouse even when it leaves the canvas
+   ready();
+	// load the source image:
+	
+}
+
+function stop() {
+	createjs.Ticker.removeEventListener("tick", tick);
+}
+
+function ready() {
+    var lineBrushCircle=var brush = new createjs.Brush({
+			name:'lineBrushCircle',
+			cursor:"pointer",
+			draw:drawCircle,
+			text:'直线',
+			radius:40,
+			x:cavs.width /3,
+			y:cavs.height/2,
+			listeners:{
+			   
+			}
+		
+		
+		});	
+		  var lineBrushCircle=var brush = new createjs.Brush({
+			name:'lineBrushCircle',
+			cursor:"pointer",
+			draw:drawCircle,
+			text:'直线',
+			radius:40,
+			x:cavs.width /3,
+			y:cavs.height/2,
+			listeners:{
+			   
+			}
+		
+		
+		});	
+	container.addChild(lineBrushCircle);
+	//examples.hideDistractor();
+	createjs.Ticker.addEventListener("tick", tick);
+}
+
+function tick(event) {
+	// this set makes it so the stage only re-renders when an event handler indicates a change has happened.
+	if (update) {
+		update = false; // only update once
+		stage.update(event);
+	}
+}
+init();
+</script>
+</body></html>

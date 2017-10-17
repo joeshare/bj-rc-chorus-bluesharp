@@ -1,0 +1,78 @@
+<div class="chorus-query-visualization">
+    <nav-bar :nav-list="navlist" style="margin-bottom: 10px;"></nav-bar>
+    <div class="chorus-toolbar" style="    padding: 0 10px;">
+        <div class="toolbar-l" style=" clear: both;">
+            <div style="font-size: larger; height: 25px;">
+                关系图谱可视化查询BluesHarp
+            </div>
+            <div style="font-size: small;height: 20px;">您可按不同查询级别进行检索。</div>
+        </div>
+        <div class="toolbar-r">
+            <button class="create-data-table-button admin-small" :disabled="$parent.isSnapshoot" style="margin-right: 5px;" @click="saverule">保存规则</button>
+            <button class="create-data-table-button admin-small":disabled="$parent.isSnapshoot"  @click="dosubmit">查询</button>
+        </div>
+    </div>
+
+    <div id="query-visualization-fromEntityCondition" style="margin-top: 30px; padding: 0 10px; font-size: 14px;">
+        <entity-a ref="refentitya"></entity-a>
+    </div>
+    <div class="and-condition-panel" >
+        <div class="and-condition-panel-line"></div><br/>
+        <div class="and-condition-panel-text" >and</div><br/>
+        <div class="and-condition-panel-line"></div>
+    </div>
+    <div id="query-visualization-relationCondition" style="padding: 0 10px;">
+       <relation ref="refrelation"></relation>
+    </div>
+    <div class="and-condition-panel" >
+        <div class="and-condition-panel-line"></div><br/>
+        <div class="and-condition-panel-text" >and</div><br/>
+        <div class="and-condition-panel-line"></div>
+    </div>
+    <div id="query-visualization-toEntityCondition" style="padding: 0 10px;">
+        <entity-b ref="refeneityb"></entity-b>
+    </div>
+    <div class="and-condition-panel single-line" >
+
+    </div>
+    <div id="query-visualization-limitCondition" style="padding: 0 10px;">
+        <condition ref="refcondition"></condition>
+    </div>
+    <div class="and-condition-panel single-line" >
+
+    </div>
+    <div id="query-visualization-dataChart">
+       <Chart :chart-data="chartData" :current-hit-data="currentHitData"></Chart>
+    </div>
+    <anchor-bar></anchor-bar>
+
+    <ad-modal
+            height="334px"
+            width="440px"
+            title="保存查询规则"
+            :display="modalDisplay"
+            :buttons="modalButtons"
+            @admin-modal-off="() => {modalDisplay = false }"
+            @admin-modal-cancel="() => {modalDisplay = false }"
+    >
+        <div  style="padding: 10px;">
+            <ad-input
+                      style="width: 100%;"
+                      label="规则名称："
+                      v-model="rulename"
+                      placeholder=""
+                      :warnings="rulenameWarnings"
+            ></ad-input>
+        </div>
+
+        <div style="padding: 10px;">
+            <ad-input
+                    style="width: 100%;"
+                      label="规则描述："
+                      type="textarea"
+                      placeholder=""
+                      v-model="ruledesc"
+            ></ad-input>
+        </div>
+    </ad-modal>
+</div>

@@ -1,0 +1,225 @@
+// Author: Awey
+// email: chenwei@rongcapital.cn
+// github: https://github.com/BboyAwey
+// blog: http://www.jianshu.com/u/3c8fe1455914
+
+// Modifier:
+
+// default button
+input[type="button"],
+input[type="reset"],
+input[type="submit"],
+button { // 按钮主体
+  position: relative;
+  min-width: 88px;
+  height: 32px;
+  padding: 0 16px;
+  border-radius: 2px; 
+  border: 0;
+  outline: none;
+  background: none;
+  color: #fff;
+  font-size: $normal;
+  line-height: 32px;
+  cursor: pointer;
+  font-family: $fontFamily;
+  background-color: $primary;
+  transition: box-shadow .2s ease;
+}
+
+// amend for input button
+input[type="button"],
+input[type="reset"],
+input[type="submit"] {
+  width: auto;
+}
+input[type="button"]:focus,
+input[type="reset"]:focus,
+input[type="submit"]:focus {
+  border: none;
+  box-shadow: none;
+}
+
+input[type="button"]:hover:not(:disabled),
+input[type="reset"]:hover:not(:disabled),
+input[type="submit"]:hover:not(:disabled),
+button:hover:not(:disabled) {
+  background-color: $lightPrimary;
+}
+
+input[type="button"]:active:not(:disabled),
+input[type="reset"]:active:not(:disabled),
+input[type="submit"]:active:not(:disabled),
+button:active:not(:disabled) {
+  background-color: $darkPrimary;
+  box-shadow: none;
+}
+
+input[type="button"]:disabled,
+input[type="reset"]:disabled,
+input[type="submit"]:disabled,
+button:disabled {
+  cursor: not-allowed;
+  background-color: rgba($primary, .3)
+}
+
+// types of button
+$buttons:
+  (danger, $danger, $lightDanger, $darkDanger),
+  (success, $success, $lightSuccess, $darkSuccess),
+  (warning, $warning, $lightWarning, $darkWarning),
+  (info, $info, $lightInfo, $darkInfo),
+  (auxiliary, $grayBrighten10, $grayBrighten15, $grayBrighten5);
+
+// other types of button
+@each $type, $color, $light, $dark in $buttons {
+  input[type="button"].admin-#{$type},
+  input[type="reset"].admin-#{$type},
+  input[type="submit"].admin-#{$type},
+  button.admin-#{$type} {
+    background-color: $color;
+    @if $type == "auxiliary" {
+      color: $grayDarken45;
+    }
+  }
+
+  input[type="button"].admin-#{$type}:hover:not(:disabled),
+  input[type="reset"].admin-#{$type}:hover:not(:disabled),
+  input[type="submit"].admin-#{$type}:hover:not(:disabled),
+  button.admin-#{$type}:hover:not(:disabled) {
+    background-color: $light;
+  }
+
+  input[type="button"].admin-#{$type}:active:not(:disabled),
+  input[type="reset"].admin-#{$type}:active:not(:disabled),
+  input[type="submit"].admin-#{$type}:active:not(:disabled),
+  button.admin-#{$type}:active:not(:disabled) {
+    background-color: $dark;
+  }
+
+  input[type="button"].admin-#{$type}:disabled,
+  input[type="reset"].admin-#{$type}:disabled,
+  input[type="submit"].admin-#{$type}:disabled,
+  button.admin-#{$type}:disabled {
+    cursor: not-allowed;
+    @if $type == "auxiliary" {
+      color: $dark;
+      background-color: $light;
+    } @else {
+      background-color: rgba($color, .3);
+    }
+  }
+}
+
+// default plain button
+input[type="button"].admin-plain,
+input[type="reset"].admin-plain,
+input[type="submit"].admin-plain,
+button.admin-plain {
+  border: 1px solid $primary;
+  background: none;
+  color: $primary;
+}
+
+input[type="button"].admin-plain:hover:not(:disabled),
+input[type="reset"].admin-plain:hover:not(:disabled),
+input[type="submit"].admin-plain:hover:not(:disabled),
+button.admin-plain:hover:not(:disabled) {
+  background-color: $lightPrimary;
+  color: #fff;
+}
+
+input[type="button"].admin-plain:active:not(:disabled),
+input[type="reset"].admin-plain:active:not(:disabled),
+input[type="submit"].admin-plain:active:not(:disabled),
+button.admin-plain:active:not(:disabled) {
+  border-color: $darkPrimary;
+  background-color: $darkPrimary;
+  color: #fff;
+}
+
+input[type="button"].admin-plain:disabled,
+input[type="reset"].admin-plain:disabled,
+input[type="submit"].admin-plain:disabled,
+button.admin-plain:disabled {
+  border: 1px solid rgba($primary, .3);
+  background: none;
+  color: rgba($primary, .5);
+}
+// other types of plain button
+@each $type, $color, $light, $dark in $buttons {
+  input[type="button"].admin-plain.admin-#{$type},
+  input[type="reset"].admin-plain.admin-#{$type},
+  input[type="submit"].admin-plain.admin-#{$type},
+  button.admin-plain.admin-#{$type} {
+    border-color: $color;
+    @if $type == "auxiliary" {
+      color: $grayDarken45;
+    } @else {
+      color: $color;
+    }
+  }
+
+  input[type="button"].admin-plain.admin-#{$type}:hover:not(:disabled),
+  input[type="reset"].admin-plain.admin-#{$type}:hover:not(:disabled),
+  input[type="submit"].admin-plain.admin-#{$type}:hover:not(:disabled),
+  button.admin-plain.admin-#{$type}:hover:not(:disabled) {
+    background-color: $light;
+    border-color: $light;
+    @if $type == "auxiliary" {
+      color: $grayDarken45;
+    } @else {
+      color: #fff;
+    }
+  }
+
+  input[type="button"].admin-plain.admin-#{$type}:active:not(:disabled),
+  input[type="reset"].admin-plain.admin-#{$type}:active:not(:disabled),
+  input[type="submit"].admin-plain.admin-#{$type}:active:not(:disabled),
+  button.admin-plain.admin-#{$type}:active:not(:disabled) {
+    background-color: $dark;
+    border-color: $dark;
+    @if $type == "auxiliary" {
+      color: $grayDarken45;
+    } @else {
+      color: #fff;
+    }
+  }
+
+  input[type="button"].admin-plain.admin-#{$type}:disabled,
+  input[type="reset"].admin-plain.admin-#{$type}:disabled,
+  input[type="submit"].admin-plain.admin-#{$type}:disabled,
+  button.admin-plain.admin-#{$type}:disabled {
+    @if $type == "auxiliary" {
+      border-color: $light;
+      color: $dark;
+    } @else {
+      border-color: rgba($color, .3);
+      color: rgba($color, .5);
+    }
+  }
+}
+
+// small button
+input[type="button"].admin-small,
+input[type="reset"].admin-small,
+input[type="submit"].admin-small,
+button.admin-small {
+  min-width: 64px;
+  height: 26px;
+  padding: 0 12px;
+  line-height: 26px;
+  font-size: $small;
+}
+
+// mini button
+input[type="button"].admin-mini,
+input[type="reset"].admin-mini,
+input[type="submit"].admin-mini,
+button.admin-mini {
+  min-width: 42px;
+  height: 20px;
+  padding: 0 8px;
+  line-height: 20px;
+  font-size: $small;
+}

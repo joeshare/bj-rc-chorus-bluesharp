@@ -1,0 +1,53 @@
+<div>
+    <nav-bar :nav-list="navlist" ></nav-bar>
+    <div class="chorus-toolbar">
+        <div class="toolbar-l">
+            <div class="toolbar-l" style=" clear: both;">
+                <div style="font-size: larger; height: 25px;">
+                    关系图谱可视化查询BluesHarp
+                </div>
+                <div style="font-size: small;height: 20px;">您可选择历史保存的查询规则，进行数据检索。</div>
+            </div>
+        </div>
+        <div class="toolbar-r">
+            <ad-input-edit style="margin:3px 10px;width: 180px;line-height:28px;float: left;"
+                           v-model="searchname"
+                           placeholder="按规则名称搜索"
+                           :small="true"
+                           maxlength="20"
+                           icon="ion-ios-search"></ad-input-edit>
+            <input class="chorus-button admin-small" style="float: left;" type="button" value="搜索" @click="fetchData(1)">
+            <input class="chorus-button admin-small" style="float: left;" type="button"  value="新建查询模型"  @click="newrole()">
+        </div>
+    </div>
+    <div class="chorus-grid-wrapper chorus-grid" style="margin-top: 20px;">
+        <table class="admin-table admin-striped ">
+            <thead>
+            <tr>
+                <th>规则名称</th>
+                <th>规则描述</th>
+                <th>所有者</th>
+                <th>更新时间</th>
+                <th style="min-width: 100px">操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr v-if="data.length==0">
+                <td  :colspan="7" style="height: 30px;line-height: 30px;text-align: center">暂无数据</td>
+            </tr>
+            <tr v-for="entry in data" v-else >
+                <td :title="entry.projectName">{{entry['ruleName']}}</td>
+                <td :title="entry.projectCode">{{entry['ruleDesc']}}</td>
+                <td :title="entry.projectDesc">{{entry['userName']}}</td>
+                <td :title="entry.projectDesc">{{entry['createTime']}}</td>
+                <td class="project-management-opt" style="text-align: center">
+                    <input class="chorus-button admin-small"  type="button" value="透视" @click="prospect(entry)">
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div  style="text-align: right;">
+        <ad-paginator :total-count="totalCount" :page-size="pageSize" :current-page="currentPage"  @toggle-page="togglePage($event)"></ad-paginator>
+    </div>
+</div>

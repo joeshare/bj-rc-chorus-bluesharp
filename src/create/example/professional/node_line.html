@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<!-- saved from url=(0072)http://whxaxes.github.io/canvas-test/src/Funny-demo/transform/demo1.html -->
+<html><head lang="en"><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <title>图像拉扯变形</title>
+    <style>
+        body{-moz-user-select: none;}
+        #cas{
+            position: absolute;
+            
+            border: 1px solid;
+        }
+        .tips{text-align: center;margin: 15px 0;}
+        .control{ text-align: center; }
+		canvas,img{
+		   image-rendering: optimizeSpeed;             /* Older versions of FF          */
+		  image-rendering: -moz-crisp-edges;          /* FF 6.0+                       */
+		  image-rendering: -webkit-optimize-contrast; /* Safari                        */
+		  image-rendering: -o-crisp-edges;            /* OS X & Windows Opera (12.02+) */
+		  image-rendering: pixelated;                 /* Awesome future-browsers       */
+		  -ms-interpolation-mode: nearest-neighbor;   /* IE                            */
+		}
+    </style>
+</head>
+<body onselectstart="return false">
+<div style="width:1000px;height:500px;">
+<canvas id="cas" width="1000" height="500">
+    亲，你滴浏览器太out啦，换一个吧
+</canvas>
+</div>
+
+<script src="../../js/easeljs-0.8.2.combined.js"></script>
+<script src="../../js/easeljs-brush.plugin.js"></script>
+<script>
+
+var canvas, stage;
+
+var mouseTarget;	// the display object currently under the mouse, or being dragged
+var dragStarted;	// indicates whether we are currently in a drag operation
+var offset;
+var update = true;
+var iconObj;
+var image;
+var maxZ=1000000;
+var container;
+var lins={};
+var lineEndName=null;
+function createLine(opt){
+   var line=new createjs.Brush({
+				id:opt.id,
+				name:opt.name,
+				start:opt.start,
+				end:opt.end,
+				cursor:"pointer",
+				strokeStyle:'#d98d4f',
+				lineWidth:4,
+				draw:createjs.brushUtils.drawLine
+			  });	
+  return line;			  
+}
+
+function drawCircle(ctx){
+       createjs.brushUtils.drawCircle(ctx,Object.assign({},this))
+}
+function drawRoundedRect(ctx) {
+    ctx.save(); 
+	createjs.brushUtils.drawShadow(ctx);
+    createjs.brushUtils.drawRect(ctx,{fillStyle:this.fillStyle,lineWidth: 1,strokeStyle : '#d98d4f',width:this.width,height:this.height})
+	ctx.restore(); 
+	
+    createjs.brushUtils.drawLine(ctx,{lineWidth: 4,strokeStyle : '#d98d4f',start:{x:0,y:0},end:{x:0,y:this.height}})
+	createjs.brushUtils.drawText(ctx,{text:'是否订阅公众号',fillStyle:"#3c3c3c",offsetX:this.width/2,offsetY:15})
+	createjs.brushUtils.drawText(ctx,{text:'请双击开始设置',fillStyle:"#c8c8c8",offsetX:this.width/2,offsetY:35})
+	createjs.brushUtils.drawImg(ctx,{image:iconObj,offsetX:5,offsetY:10})
+ 
+}
+function  drawCloseBtn(ctx){
+    
+   	ctx.save(); 
+	ctx.beginPath();
+	ctx.fillStyle = this.fillStyle;
+    ctx.fillRect(0,0, this.width,this.height);
+	ctx.restore(); 
+	ctx.save();
+    ctx.fillStyle="#d98d4f";
+    ctx.font="normal bolder 10px icon";
+    ctx.textBaseline="middle"
+    ctx.textAlign="center";
+    ctx.fillText('×',this.width/2,this.height/2);
+    ctx.restore();
+}
+function createNode(id,x,y){
+    var prefix=id;
+	var node=new createjs.BrushBox({
+	id:prefix+'_node',
+	prefix:prefix,
+	name:prefix+'_node',
+	   groupX:x,
+	   groupY:y
+	});
+    var roundedRect=new createjs.Brush({
+    name:prefix+'_roundedRect_node',
+	id:prefix+'_roundedRect_node',
+    groupX:0,
+	groupY:0,
+	z:prefix,
+	width:170,
+	height:50,
+	fillStyle:'#fafafa',
+	draw:drawRoundedRect,
+	listeners:{
+	  'pressmove':function(e){
+	        this.parent.groupX = e.stageX + this.offset.x;
+			this.parent.groupY = e.stageY + this.offset.y;
+			update = true;
+	  },
+	  'rollover':function(e){
+		this.parent.findChildByName(this.parent.prefix+'_closeBtn').visible=true;
+		update=true;
+	  },
+	  'rollout':function(e){
+	   	 this.parent.findChildByName(this.parent.prefix+'_closeBtn').visible=false;
+		 update=true;
+		
+	  },
+	  'mousedown':function(e){
+		 this.offset = {x: this.x - e.stageX, y: this.y - e.stageY};
+		 update = true;
+	  }
+	  ,
+	   'click':function(e){
+	      console.log(this.name)
+	   }
+	}
+	
+  });
+
+  var closeBtn=new createjs.Brush({
+    id:prefix+'_closeBtn',
+	name:prefix+'_closeBtn',
+	groupX:152,
+	groupY:0,
+    width:18,
+	height:18,
+	fillStyle:'#d9e6f3',
+	draw:drawCloseBtn,
+	visible:true,
+	cursor:'pointer',
+	listeners:{
+	  'rollover':function(e){
+	     this.visible=true;
+	     update=true;
+	  },
+	  'rollout':function(e){
+	      this.visible=false;
+	      update=true;
+	  },
+	  'click':function(e){
+	     container.removeChild(this.parent)
+		 update=true;
+	  }
+	}
+  });
+
+  var input=new createjs.Brush({
+    id:prefix+'_input',
+	name:prefix+'_input',
+	groupX:85,
+	groupY:0,
+	radius:6.5,
+	strokeStyle:'#d8d8d8',
+	fillStyle:'#fafafa',
+   	draw:createjs.brushUtils.drawCircle,
+	listeners:{
+	  'mouseover':function(e){
+	 	lineEndName=this.name;
+		
+	  },
+	  'mouseout':function(e){
+		  lineEndName=null;
+		    console.log("lineEndName",this.name)
+		//  stage.render();
+	  },
+	  'click':function(e){
+	     console.log('mouseover',this.name)
+	  }
+	}
+  });
+  var output_y=new createjs.Brush({
+    id:prefix+'_output_y',
+	name:prefix+'_output_y',
+	groupX:60,
+	groupY:50,
+	radius:6.5,
+	strokeStyle:'#65bb43',
+	fillStyle:'#dcffce',
+    listeners:{
+	  'click':function(e){
+	     console.log("output_y",this.name)
+	  },
+	  'pressup':function(e){
+	    stage.update();
+		if(lineEndName){
+		  var prefix=this.parent.name;
+		  var startx=this.x,starty=this.y,endx=e.stageX,endy=e.stageY;
+		  var line=createLine({
+		   start:{x:startx,y:starty},
+		   end:{x:endx,y:endy},
+		   id:prefix+'_line',
+		   name:prefix+'_line',
+		 });
+		  container.addChildAt(line,0);
+		  update=true;
+		}
+	   
+	  },
+	  'pressmove':function(e){
+		 var startx=this.x,starty=this.y,endx=e.stageX,endy=e.stageY;
+		 stage.update();
+		 var opt={
+		   start:{x:startx,y:starty},
+		   end:{x:endx,y:endy},
+		   globalCompositeOperation:'destination-over',
+		 	lineWidth:4,
+	       strokeStyle:'#d98d4f'
+		};
+		 createjs.brushUtils.drawLine(stage.canvas.getContext("2d"),opt)
+	   }
+	},
+    draw:createjs.brushUtils.drawCircle
+  });
+  var output_x=new createjs.Brush({
+    id:prefix+'_output_x',
+	name:prefix+'_output_x',
+	groupX:120,
+	groupY:50,
+	radius:6.5,
+	strokeStyle:'#e64646',
+	fillStyle:'#ffe1e1',
+	 listeners:{
+	  'pressup':function(e){
+	    console.log("mouseup",this.name)
+	    update=true;
+	  },
+	  'click':function(e){
+	    console.log('output_x',this.name)
+	  }
+	 }, 
+   	draw:createjs.brushUtils.drawCircle
+  });
+  node.addChild(roundedRect,input,closeBtn,input,output_y,output_x);
+  return node;
+
+}
+function init() {
+	//examples.showDistractor();
+	// create stage and point it to the canvas:
+	canvas = document.getElementById("cas");
+	stage = new createjs.Stage(canvas);
+
+	// enable touch interactions if supported on the current device:
+	createjs.Touch.enable(stage);
+
+	// enabled mouse over / out events
+	stage.enableMouseOver(10);
+	stage.mouseMoveOutside = true; // keep tracking the mouse even when it leaves the canvas
+
+	// load the source image:
+	iconObj= image = new Image();
+	image.src = '../../images/icon1.gif';
+	image.onload = handleImageLoad;
+}
+
+function stop() {
+	createjs.Ticker.removeEventListener("tick", tick);
+}
+
+function handleImageLoad(event) {
+	var image = event.target;
+	var bitmap;
+	container = new createjs.Container();
+	stage.addChild(container);
+
+	   var num= 4;
+	   while(num--){
+	      var node= createNode(num,canvas.width * Math.random(),canvas.height * Math.random())
+		  container.addChild(node);
+	   }
+	//examples.hideDistractor();
+	createjs.Ticker.addEventListener("tick", tick);
+}
+
+function tick(event) {
+	if (update) {
+		update = false;
+		stage.update(event);
+	}
+}
+init();
+</script>
+</body></html>

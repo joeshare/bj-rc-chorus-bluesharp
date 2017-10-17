@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<!-- saved from url=(0072)http://whxaxes.github.io/canvas-test/src/Funny-demo/transform/demo1.html -->
+<html><head lang="en"><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <title>图像拉扯变形</title>
+    <style>
+        body{-moz-user-select: none;}
+        #cas{
+            position: absolute;
+            
+            border: 1px solid;
+        }
+        .tips{text-align: center;margin: 15px 0;}
+        .control{ text-align: center; }
+		canvas,img{
+		   image-rendering: optimizeSpeed;             /* Older versions of FF          */
+		  image-rendering: -moz-crisp-edges;          /* FF 6.0+                       */
+		  image-rendering: -webkit-optimize-contrast; /* Safari                        */
+		  image-rendering: -o-crisp-edges;            /* OS X & Windows Opera (12.02+) */
+		  image-rendering: pixelated;                 /* Awesome future-browsers       */
+		  -ms-interpolation-mode: nearest-neighbor;   /* IE                            */
+		}
+    </style>
+</head>
+<body onselectstart="return false">
+<div style="width:1000px;height:500px;">
+<canvas id="cas" width="1000" height="500">
+    亲，你滴浏览器太out啦，换一个吧
+</canvas>
+</div>
+<script src="../../js/painter.test.js"></script>
+<script src="../../js/webgl-0.8.2.combined.js"></script>
+<script>
+var dragStart=false,maxZ=1000,UPDATE=false,
+stage=Painter.createStage({
+    canvas:'#cas',
+	id:'stage',
+	listeners:{}
+  });
+
+
+function shadow(ctx){
+   
+  
+    ctx.shadowOffsetX = 2;
+    ctx.shadowOffsetY = 2;
+    ctx.shadowColor = 'rgba(100,100,100,0.2)';
+    ctx.shadowBlur = 3;
+   
+}
+function drawText(ctx,text){
+    ctx.save();
+    ctx.fillStyle="#fff";
+    ctx.font="italic 14px sans-serif";
+    ctx.textBaseline="middle"
+    ctx.textAlign="center";
+    ctx.fillText(text,this.postX+this.width/2, this.postY+this.height/2);
+    ctx.restore();
+}
+function drawRoundedRect(ctx) {
+	ctx.save(); 
+	
+	ctx.beginPath();
+	
+	shadow(ctx)
+	ctx.translate(this.x,this.y); 
+	ctx.fillStyle = this.fillStyle;
+    ctx.strokeStyle = '#d98d4f';
+	ctx.strokeRect(0,0, this.width,this.height);
+	ctx.fillRect(0,0, this.width,this.height);
+	ctx.stroke();
+	ctx.restore(); 
+	ctx.save(); 
+	ctx.beginPath();
+	ctx.translate(this.x,this.y); 
+	ctx.strokeStyle = '#d98d4f';
+	ctx.lineWidth = 4;
+  	ctx.moveTo(0, 0);
+    ctx.lineTo(0, this.height);
+    ctx.lineJoin = 'miter';
+	ctx.stroke();
+	ctx.stroke();
+    ctx.restore(); 
+	ctx.save();
+    ctx.fillStyle="#3c3c3c";
+    ctx.font="normal bolder 10px icon";
+    ctx.textBaseline="middle"
+    ctx.textAlign="center";
+    ctx.fillText('是否订阅公众号',this.x+this.width/2,this.y+15);
+    ctx.restore();
+	ctx.save();
+    ctx.fillStyle="#c8c8c8";
+    ctx.font="normal bolder 10px icon";
+    ctx.textBaseline="middle"
+    ctx.textAlign="center";
+    ctx.fillText('请双击开始设置',this.x+this.width/2,this.y+35);
+    ctx.restore();
+	
+	 
+}
+function  drawCloseBtn(ctx){
+   	ctx.save(); 
+	ctx.beginPath();
+	ctx.translate(this.x,this.y); 
+	ctx.fillStyle = this.fillStyle;
+    ctx.fillRect(0,0, this.width,this.height);
+	ctx.closePath();
+    ctx.restore(); 
+	ctx.save();
+    ctx.fillStyle="#d98d4f";
+    ctx.font="normal bolder 10px icon";
+    ctx.textBaseline="middle"
+    ctx.textAlign="center";
+    ctx.fillText('×',this.x+this.width/2,this.y+this.height/2);
+    ctx.restore();
+}
+function drawFlower(ctx){
+    var x=this.x,y=this.y;
+	ctx.save(); 
+	ctx.beginPath();
+	ctx.translate(this.x,this.y); 
+	ctx.scale(this.scaleX,this.scaleY);
+	ctx.drawImage(imageObj, 0, 0);
+	ctx.restore(); 
+} 
+
+function drawCircle(ctx){
+       ctx.save(); 
+ 	   ctx.beginPath();
+	   ctx.translate(this.x,this.y); 
+	   ctx.arc(0,0,this.radius,0*Math.PI,2*Math.PI)
+       ctx.closePath();
+       ctx.fillStyle = this.fillStyle;
+       ctx.fill();
+       ctx.strokeStyle =this.strokeStyle;
+       ctx.stroke();
+	   ctx.restore(); 
+
+}
+function createRoundedRect(id,x,y){
+    var roundedRect=Painter.createSpirit({
+    name:id,
+	id:id,
+    x:x,
+	y:y,
+	z:id,
+	//scaleX:.9,
+	//scaleY:.9,
+	width:170,
+	height:50,
+	fillStyle:'#fafafa',
+	draw:drawRoundedRect,
+	listeners:{
+	  'mousemove':function(e){
+	    console.log('dragStart ',dragStart+" mousemove:"+this.name)
+	    if(dragStart){
+		    this.x=e.offsetX-this.offsetX;
+			this.y=e.offsetY-this.offsetY;
+		 }
+	
+		
+	  },
+	  'mouseover':function(e){
+	    console.log('mouseover:'+this.name)
+	     this.getChild(this.id+'_closeBtn').visible=true;
+	  },
+	  'mouseout':function(e){
+	     console.log('mouseout:'+this.name)
+	   	 this.getChild(this.id+'_closeBtn').visible=false;
+		
+	  },
+	  'mouseup':function(e){
+	    this.active=false;
+	    dragStart=false;
+		UPDATE=false;
+		
+	  },
+	  'mousedown':function(e){
+	    // console.log('mousedown',e)
+	    // console.log('mousedown',this)
+		 this.offsetX=e.offsetX-this.x;
+	     this.offsetY=e.offsetY-this.y;
+		 this.z=maxZ++;
+		 this.active=true;
+		 dragStart=true;
+		 UPDATE=true;
+		//  stage.render();
+	  }
+	  // ,
+	  // 'click':function(e){
+	  //    console.log(this.name)
+	  // }
+	}
+  });
+  var closeBtn=Painter.createSpirit({
+    id:id+'_closeBtn',
+	name:id+'_closeBtn',
+	groupX:152,
+	groupY:0,
+    width:18,
+	height:18,
+	fillStyle:'#d9e6f3',
+	draw:drawCloseBtn,
+	visible:false,
+	listeners:{
+	  'mouseover':function(e){
+	     this.visible=true;
+	     stage.canvas.style.cursor='pointer';
+		
+	  },
+	  'mouseout':function(e){
+	      this.visible=false;
+	   	  stage.canvas.style.cursor='';
+		//  stage.render();
+	  },
+	  'click':function(e){
+	     stage.removeChild(this.parentId)
+	  }
+	}
+  });
+  var icon=Painter.createSpirit({
+    id:id+'_icon',
+	name:id+'_icon',
+	groupX:12,
+	groupY:10,
+    scaleX:.5,
+	scaleY:.5,
+	draw:drawFlower
+  });
+  var input=Painter.createSpirit({
+    id:id+'_input',
+	name:id+'_input',
+	groupX:80,
+	groupY:0,
+	radius:6.5,
+	strokeStyle:'#d8d8d8',
+	fillStyle:'#fafafa',
+   	draw:drawCircle
+  });
+  var output_y=Painter.createSpirit({
+    id:id+'_output_y',
+	name:id+'_output_y',
+	groupX:60,
+	groupY:50,
+	radius:6.5,
+	strokeStyle:'#65bb43',
+	fillStyle:'#dcffce',
+     listeners:{
+	  
+	  'click':function(e){
+	     console.log(this.name)
+	  }
+	},
+    draw:drawCircle
+  });
+  var output_x=Painter.createSpirit({
+    id:id+'_output_x',
+	name:id+'_output_x',
+	groupX:110,
+	groupY:50,
+	radius:6.5,
+	strokeStyle:'#e64646',
+	fillStyle:'#ffe1e1',
+	 listeners:{
+	  
+	  'click':function(e){
+	    console.log(this.name)
+	  }
+	 }, 
+   	draw:drawCircle
+  });
+  roundedRect.addChild(closeBtn,icon,input,output_y,output_x);
+  return roundedRect;
+
+
+}
+function ready(){
+  var len=140;
+  while(len--){
+      var cavs=stage.canvas,
+	   x = cavs.width * Math.random() | 0,
+	   y = cavs.height * Math.random() | 0;
+      var roundedRect=createRoundedRect(len+'',x,y);
+      stage.addChild(roundedRect);
+  }
+    var output=Painter.createSpirit({
+    id:'_output_',
+	name:'_output_',
+	x:60,
+	y:50,
+	radius:6.5,
+	strokeStyle:'#65bb43',
+	fillStyle:'#dcffce',
+   
+    draw:drawCircle
+  });
+  stage.addChild(output);
+  //stage.addChild(s,s1,s2,flower,roundedRect);
+  console.log(stage.getChildren())
+   stage.render();
+  animloop();
+  //console.log(Painter.findObjectById('s1'))
+}
+
+function animloop(){
+  requestAnimFrame(animloop);
+  if(UPDATE){
+   stage.render();
+  }
+ 
+
+}
+var imageObj = new Image();
+imageObj.src = '../../images/icon1.gif';
+imageObj.onload = function() {
+  ready();
+};
+</script>
+</body></html>

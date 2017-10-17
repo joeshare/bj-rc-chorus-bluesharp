@@ -1,0 +1,27 @@
+// Author: Awey
+// email: chenwei@rongcapital.cn
+// github: https://github.com/BboyAwey
+// blog: http://www.jianshu.com/u/3c8fe1455914
+
+// Modifier:
+
+// paragraph
+// normal p
+p {
+  margin: 12px 0;
+  line-height: $normal * 1.5;
+  font-size: $normal;
+  color: $grayDarken35;
+  text-align: justify; // 中文优先，英文下在小宽度容器中体验会不好
+}
+// strong p
+p.admin-strong {
+  font-size: $medium;
+  line-height: $medium * 1.4;
+}
+// weak p
+p.admin-weak { // 减弱段落
+  font-size: $small;
+  line-height: $small * 1.6;
+  color: $grayDarken25;
+}

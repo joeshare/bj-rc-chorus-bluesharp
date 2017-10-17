@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<!-- saved from url=(0072)http://whxaxes.github.io/canvas-test/src/Funny-demo/transform/demo1.html -->
+<html><head lang="en"><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <title>图像拉扯变形</title>
+    <style>
+        body{-moz-user-select: none;}
+        #cas{
+            position: absolute;
+            
+            border: 1px solid;
+        }
+        .tips{text-align: center;margin: 15px 0;}
+        .control{ text-align: center; }
+		canvas,img{
+		   image-rendering: optimizeSpeed;             /* Older versions of FF          */
+		  image-rendering: -moz-crisp-edges;          /* FF 6.0+                       */
+		  image-rendering: -webkit-optimize-contrast; /* Safari                        */
+		  image-rendering: -o-crisp-edges;            /* OS X & Windows Opera (12.02+) */
+		  image-rendering: pixelated;                 /* Awesome future-browsers       */
+		  -ms-interpolation-mode: nearest-neighbor;   /* IE                            */
+		}
+    </style>
+</head>
+<body onselectstart="return false">
+<div style="width:1000px;height:500px;">
+<canvas id="cas" width="1000" height="500">
+    亲，你滴浏览器太out啦，换一个吧
+</canvas>
+</div>
+
+<script src="../../js/easeljs-0.8.2.combined.js"></script>
+<script src="../../js/easeljs-brush.plugin.js"></script>
+<script>
+
+var canvas, stage;
+var offset;
+var update = true;
+var container;
+
+function drawCircle(ctx){
+       createjs.brushUtils.drawCircle(ctx,Object.assign({},this))
+	   var opt=Object.assign({},this);
+	   opt.fillStyle="#666";
+       createjs.brushUtils.drawText(ctx,opt)
+}
+function  drawLine(ctx,arg){
+	   var opt=Object.assign({},arg);
+	   opt.strokeStyle="rgb(56,128,255)";
+       createjs.brushUtils.drawLine(ctx,opt)
+}
+function  drawBezier(ctx,arg){
+ 	   var opt=Object.assign({},arg);
+	   opt.strokeStyle="rgb(219,83,37)";
+       createjs.brushUtils.drawBezier(ctx,opt)
+}
+function init() {
+	//examples.showDistractor();
+	// create stage and point it to the canvas:
+	canvas = document.getElementById("cas");
+	stage = new createjs.Stage(canvas);
+	// enable touch interactions if supported on the current device:
+	createjs.Touch.enable(stage);
+    container = new createjs.Container();
+	
+	stage.addChild(container);
+	// enabled mouse over / out events
+	stage.enableMouseOver(10);
+	stage.mouseMoveOutside = true; // keep tracking the mouse even when it leaves the canvas
+    ready();
+	// load the source image:
+	
+}
+
+function stop() {
+	createjs.Ticker.removeEventListener("tick", tick);
+}
+
+function ready() {
+    var lineBrushCircle=new createjs.Brush({
+			name:'lineBrushCircle',
+			cursor:"pointer",
+			draw:drawCircle,
+			text:'直线',
+			radius:40,
+			x:canvas.width /3,
+			y:canvas.height/3,
+			listeners:{
+			   'pressmove':function(e){
+				 var startx=this.x,starty=this.y,endx=e.stageX,endy=e.stageY;
+				 stage.update();
+				 drawLine(stage.canvas.getContext("2d"),{
+				   start:{x:startx,y:starty},
+				   end:{x:endx,y:endy},
+				   lineWidth:2,
+				   globalCompositeOperation:'destination-over'
+				 })
+			   }
+			}
+		
+		
+		});	
+		  var bezierBrushCircle= new createjs.Brush({
+			name:'bezierBrushCircle',
+			cursor:"pointer",
+			draw:drawCircle,
+			text:'贝塞尔曲线',
+			radius:40,
+			x:canvas.width*2/3,
+			y:canvas.height/3,
+			listeners:{
+			   'pressmove':function(e){
+			   
+				 var startx=this.x,starty=this.y,endx=e.stageX,endy=e.stageY;
+				 stage.update();
+				 drawBezier(stage.canvas.getContext("2d"),{
+				   start:{x:startx,y:starty},
+				   end:{x:endx,y:endy},
+				   lineWidth:2,
+				   globalCompositeOperation:'destination-over'
+				 })
+			   }
+			}
+		
+		
+		});	
+	container.addChild(lineBrushCircle);
+	container.addChild(bezierBrushCircle);
+	createjs.Ticker.addEventListener("tick", tick);
+
+}
+
+function tick(event) {
+	// this set makes it so the stage only re-renders when an event handler indicates a change has happened.
+	if (update) {
+		update = false; // only update once
+		stage.update(event);
+	}
+}
+init();
+</script>
+</body></html>

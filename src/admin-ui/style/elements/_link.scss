@@ -1,0 +1,25 @@
+// Author: Awey
+// email: chenwei@rongcapital.cn
+// github: https://github.com/BboyAwey
+// blog: http://www.jianshu.com/u/3c8fe1455914
+
+// Modifier:
+
+// a link
+a {
+  color: $grayDarken35;
+  text-decoration: none;
+}
+a.admin-link {
+  color: $primary;
+  text-decoration: none;
+}
+a.admin-link:visited {
+  color: $grayDarken15;
+}
+a.admin-link:hover {
+  text-decoration: underline;
+}
+a.admin-link:active {
+  color: $darkPrimary;
+}

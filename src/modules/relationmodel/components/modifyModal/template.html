@@ -1,0 +1,107 @@
+<ad-modal
+        title="编辑关系模型"
+        width="850px"
+        height="550px"
+        :display="modifyFormShow"
+        :buttons="modifyFormButton"
+        @admin-modal-off="() => {close() }">
+    <div class="admin-grid-container" v-show="modifyFormStep === 1">
+        <div class="admin-grid-cell-6 create-form-el-container">
+            <ad-input-edit
+                    class="create-form-el"
+                    label="关系名称 （必填）"
+                    placeholder="起一个名称，方便您后期来识别它"
+                    maxlength="20"
+                    :warnings="relationModelRecorder.relationNameWarnings"
+                    :small="true"
+                    v-model="relationModelRecorder.relationName"
+                    ></ad-input-edit>
+        </div>
+        <div class="admin-grid-cell-6 create-form-el-container">
+            <ad-input-edit
+                    class="create-form-el"
+                    label="关系编码 （必填）"
+                    placeholder="定义一个编码，作为系统唯一标记"
+                    :warnings="relationModelRecorder.relationCodeWarnings"
+                    :small="true"
+                    :disabled=true
+                    v-model="relationModelRecorder.relationCode"
+                    ></ad-input-edit>
+        </div>
+        <div class="admin-grid-cell-6 create-form-el-container">
+            <ad-sug-input
+                    :disabled=true
+                    class="create-form-el"
+                    label="实体A （必填）"
+                    placeholder="选择一个实体"
+                    :small="true"
+                    v-model="relationModelRecorder.startEntityName"
+                    ></ad-sug-input>
+        </div>
+        <div class="admin-grid-cell-6 create-form-el-container">
+            <ad-sug-input
+                    :disabled=true
+                    class="create-form-el"
+                    label="实体B （必填）"
+                    placeholder="选择一个实体"
+                    :small="true"
+                    maxlength="20"
+                    v-model="relationModelRecorder.endEntityName"
+
+                    ></ad-sug-input>
+        </div>
+        <div class="admin-grid-cell-12 create-form-el-container">
+            <ad-input-edit
+                    class="create-form-el"
+                    type="textarea"
+                    label="关系描述"
+                    placeholder=""
+                    :small="true"
+                    :warnings="relationModelRecorder.relationDescWarnings"
+                    maxlength="50"
+                    v-model="relationModelRecorder.relationDesc"></ad-input-edit>
+        </div>
+    </div>
+    <div clas="create-form-step-2-container" v-show="modifyFormStep === 2">
+        <button class="admin-small new-field-button" @click="insertNewField('no')">添加属性</button>
+        <div class="field-table-container">
+            <table class="admin-table admin-stripedd field-table">
+                <thead>
+                <tr>
+                    <th>字段</th>
+                    <th>名称</th>
+                    <th>格式类型</th>
+                    <th>描述</th>
+                    <th>安全等级</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr v-if="relationModelRecorder.propertyList&&relationModelRecorder.propertyList.length==0">
+                    <td  :colspan="6" style="height: 30px;line-height: 30px;text-align: center">暂无数据</td>
+                </tr>
+                <tr v-for="(field,index) in relationModelRecorder.propertyList" v-else>
+                    <td>
+                        <ad-input-edit :disabled="field.disabled" placeholder=""   maxlength="20" :small="true"  :warnings="field.propertyCodeWarnings"  @keyup=""  class="field-table-form-el" v-model="field.propertyCode"></ad-input-edit>
+                    </td>
+                    <td>
+                        <ad-input-edit :disabled="field.disabled" placeholder=""  maxlength="20" :small="true"  :warnings="field.propertyNameWarnings"  @keyup=""  class="field-table-form-el" v-model="field.propertyName"></ad-input-edit>
+                    </td>
+                    <td>
+                        <ad-select :disabled="field.disabled" class="field-table-form-el" :small="true" :warnings="field.propertyTypeWarnings" :options="propertyDatatypeOptions" v-model="field.propertyType" ></ad-select>
+                    </td>
+                    <td style="max-width: 200px; overflow: hidden;">
+                        <ad-input-edit :disabled="field.disabled" placeholder=""  :small="true" maxlength="50" :warnings="field.propertyDescWarnings"   class="field-table-form-el" v-model="field.propertyDesc"></ad-input-edit>
+                    </td>
+                    <td>
+                        <ad-select  :disabled="field.disabled" class="field-table-form-el" :small="true" v-model="field.securityLevel" :warnings="field.securityLevelWarnings" :options="securityLevelOptions"></ad-select>
+                    </td>
+                    <td>
+                        <button v-show="!field.disabled" class="admin-small" @click="deleteField(field)">删除</button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</ad-modal>

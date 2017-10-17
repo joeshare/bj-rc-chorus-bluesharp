@@ -1,0 +1,43 @@
+// Author: Awey
+// email: chenwei@rongcapital.cn
+// github: https://github.com/BboyAwey
+// blog: http://www.jianshu.com/u/3c8fe1455914
+
+// Modifier:
+
+// select and input
+select,
+input {
+  height: 32px;
+  width: 198px;
+  line-height: 30px;
+  border-radius: 2px;
+  border: 1px solid $grayBrighten10;
+  padding: 0 12px;
+  font-family: $fontFamily;
+  color: $grayDarken35;
+  font-size: $normal;
+  outline: none;
+}
+
+select:focus,
+input:focus {
+  border-color: $info;
+  box-shadow: 0 0 8px rgba($info, .3);
+}
+
+select:disabled,
+input:disabled {
+  background-color: $grayBrighten20;
+  border: 1px solid $grayBrighten15;
+  cursor: not-allowed;
+}
+
+select.admin-small,
+input.admin-small {
+  height: 26px;
+  width: 166px;
+  padding: 0 8px;
+  line-height: 24px;
+  font-size: $small;
+}

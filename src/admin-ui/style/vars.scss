@@ -1,0 +1,58 @@
+// Author: Awey
+// email: chenwei@rongcapital.cn
+// github: https://github.com/BboyAwey
+// blog: http://www.jianshu.com/u/3c8fe1455914
+
+// Modifier:
+
+// style variables
+// color
+// colours
+$primary: #0e9ee2;
+$info: #28b7eb;
+$warning: #fec500;
+$danger: #f35555;
+$success: #4fca72;
+// light color
+$lightPrimary: #0ea5f0;
+$lightInfo: #2cc1f7;
+$lightWarning: #facf08;
+$lightDanger: #ff5c5c;
+$lightSuccess: #52d276;
+// dark color
+$darkPrimary: #0d98d9;
+$darkInfo: #26afe0;
+$darkWarning: #f0bc00;
+$darkDanger: #e85151;
+$darkSuccess: #4bbf6c;
+// neutral color
+$gray: #c5c7cc;
+$grayBrighten5: #d2d4d9;
+$grayBrighten10: #dfe1e5;
+$grayBrighten15: #ebedf2;
+$grayBrighten20: #f7faff;
+$grayDarken5: #babbbf;
+$grayDarken15: #a1a2a6;
+$grayDarken25: #88898c;
+$grayDarken35: #6f7073;
+$grayDarken45: #575759;
+
+
+// text
+// font family
+$fontFamily: "Helvetica Neue",Helvetica,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","微软雅黑",Arial,sans-serif;
+// font size
+$small: 12px;
+$normal: 14px;
+$medium: 16px;
+$large: 18px;
+$huge: 24px;
+$giant: 28px;
+
+/*space*/
+// $sp: 4px;
+
+/*shadows*/
+$shadowLevel1: 1px 2px 4px rgba($grayDarken45, .3);
+$shadowLevel2: 1px 2px 4px rgba($grayDarken45, .2);
+$shadowLevel3: 1px 2px 4px rgba($grayDarken45, .1);

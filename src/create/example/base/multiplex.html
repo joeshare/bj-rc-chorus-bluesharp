@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<!-- saved from url=(0072)http://whxaxes.github.io/canvas-test/src/Funny-demo/transform/demo1.html -->
+<html><head lang="en"><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <title>各种绘画</title>
+    <style>
+        body{-moz-user-select: none;}
+        #cas{
+            position: absolute;
+            border: 1px solid #999;
+        }
+
+		canvas,img{
+		   image-rendering: optimizeSpeed;             /* Older versions of FF          */
+		  image-rendering: -moz-crisp-edges;          /* FF 6.0+                       */
+		  image-rendering: -webkit-optimize-contrast; /* Safari                        */
+		  image-rendering: -o-crisp-edges;            /* OS X & Windows Opera (12.02+) */
+		  image-rendering: pixelated;                 /* Awesome future-browsers       */
+		  -ms-interpolation-mode: nearest-neighbor;   /* IE                            */
+		}
+    </style>
+</head>
+<body onselectstart="return false">
+<div style="width:1000px;height:500px;">
+<canvas id="cas" width="1000" height="500">
+    亲，你滴浏览器太out啦，换一个吧
+</canvas>
+</div>
+<script src="../../js/easeljs-0.8.2.combined.js"></script>
+<script src="../../js/easeljs-brush.plugin.js"></script>
+<script>
+var canvas ,stage ,container,update=false;
+function drawFlower(ctx){
+    var x=this.x,y=this.y;
+	ctx.save(); 
+	ctx.beginPath();
+	ctx.drawImage(imageObj, 0, 0);
+	ctx.restore(); 
+	
+} 
+function drawArc(ctx){
+       var x=this.x,y=this.y;
+	   ctx.save(); 
+ 	   ctx.beginPath();
+	   ctx.arc(0,0,40,0*Math.PI,2*Math.PI)
+       ctx.closePath();
+       ctx.lineWidth = 1;
+       ctx.fillStyle = '#f4f4f4';
+       ctx.fill();
+       ctx.strokeStyle = '#ccc';
+       ctx.stroke();
+	   ctx.restore(); 
+}
+
+function drawRoundedRect(ctx) {
+	ctx.save(); 
+	ctx.beginPath();
+	ctx.fillStyle =  '#f4f4f4';
+    ctx.strokeStyle = '#ccc';
+	ctx.lineWidth = 1;
+   	ctx.strokeRect(0,0, this.width,this.height);
+	ctx.fillRect(0,0, this.width,this.height);
+	ctx.closePath();
+    ctx.restore(); 
+}
+function getPost(){
+  var cavs=stage.canvas;
+  return {
+	 x :cavs.width * Math.random() | 0,
+	 y :cavs.height * Math.random() | 0,
+  };
+}
+function createSpirits(name,drawHandler,container){
+   var len=20,width,height;
+   while(len--){
+     var cavs=stage.canvas,
+	 x = cavs.width * Math.random() | 0,
+	 y = cavs.height * Math.random() | 0,
+	 scale=Math.random() * 0.4 + 0.6;
+	 if(name=='flower'){
+	    width=height=80;
+	 }else if(name='rect'){
+	   width=height=40;
+	 }
+	 s=new createjs.Brush({
+			name:name+len,
+			x:x,
+			y:y,
+			width:width,
+	        height:height,
+			scaleX:scale,
+			scaleY:scale,
+			draw:drawHandler
+		  });
+	var bitmap = new createjs.Bitmap(imageObj);
+	   	bitmap.x = x;
+		bitmap.y = y;
+		bitmap.rotation = 360 * Math.random() | 0;
+		bitmap.regX = bitmap.image.width / 2 | 0;
+		bitmap.regY = bitmap.image.height / 2 | 0;
+		bitmap.scaleX = bitmap.scaleY = bitmap.scale = Math.random() * 0.4 + 0.6;
+		bitmap.name = "bmp_" + len;
+		bitmap.cursor = "pointer";
+	    bitmap.on("rollover", function (evt) {
+			this.scaleX = this.scaleY = this.scale * 1.2;
+			update = true;
+		});
+
+		bitmap.on("rollout", function (evt) {
+			this.scaleX = this.scaleY = this.scale;
+			update = true;
+		});
+		bitmap.on("click", function (evt) {
+			console.log("bitmap",this.name)
+		});
+     container.addChild(s,bitmap);
+  }
+
+}
+function ready(){
+  createSpirits('arc',drawArc,container);
+  createSpirits('flower',drawFlower,container);
+  createSpirits('rect',drawRoundedRect,container);
+    stage.addChild(container);
+  stage.update();
+  console.log(stage)
+}
+function init(){
+   	//examples.showDistractor();
+	// create stage and point it to the canvas:
+	canvas = document.getElementById("cas");
+	stage = new createjs.Stage(canvas);
+	container = new createjs.Container();
+	// enabled mouse over / out events
+	stage.enableMouseOver(10);
+	stage.mouseMoveOutside = true; // keep tracking the mouse even when it leaves the canvas
+	
+	imageObj = new Image();
+	imageObj.src = '../../images/daisy.png';
+	imageObj.onload = function() {
+		 ready();
+	};
+
+}
+init();
+
+</script>
+</body></html>

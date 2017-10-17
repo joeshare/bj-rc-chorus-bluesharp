@@ -1,0 +1,536 @@
+<!DOCTYPE html>
+<!-- saved from url=(0072)http://whxaxes.github.io/canvas-test/src/Funny-demo/transform/demo1.html -->
+<html><head lang="en"><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    
+    <title>图像拉扯变形</title>
+    <style>
+        body{-moz-user-select: none;}
+        #cas{
+            //position: absolute;
+            
+            border: 1px solid;
+        }
+        .tips{text-align: center;margin: 15px 0;}
+        .control{ text-align: center; }
+		canvas,img{
+		   image-rendering: optimizeSpeed;             /* Older versions of FF          */
+		  image-rendering: -moz-crisp-edges;          /* FF 6.0+                       */
+		  image-rendering: -webkit-optimize-contrast; /* Safari                        */
+		  image-rendering: -o-crisp-edges;            /* OS X & Windows Opera (12.02+) */
+		  image-rendering: pixelated;                 /* Awesome future-browsers       */
+		  -ms-interpolation-mode: nearest-neighbor;   /* IE                            */
+		}
+    </style>
+</head>
+<body onselectstart="return false">
+<div style="width:1000px;height:500px;">
+<canvas id="cas" width="1000" height="500">
+    亲，你滴浏览器太out啦，换一个吧
+</canvas>
+<input type="button" value="add" onclick="add()"/>
+</div>
+<script src="../../js/easeljs-0.8.2.combined.js"></script>
+<script src="../../js/easeljs-0.8.2.combined.upgrade.js"></script>
+<script>
+
+var canvas, stage,container,iconObj;
+
+var mouseTarget;	// the display object currently under the mouse, or being dragged
+var dragStarted;	// indicates whether we are currently in a drag operation
+var offset;
+var update = true;
+function add(){
+   
+   var brush = new createjs.Brush({
+			name:'brushXXX'+new Date().getTime(),
+			cursor:"pointer",
+			fillStyle:'#f4f4f4',
+			draw:draw,
+			radius:10,
+			x: canvas.width * Math.random() | 0,
+			y :canvas.height * Math.random() | 0,
+			listeners:{
+			   "rollover":function (evt) {
+				//this.scaleX = this.scaleY = this.scale * 1.2;
+				//console.log('rollover',this.name)
+				update = true;
+			   },
+			   "rollout":function (evt) {
+				 //console.log('rollout',this.name)
+				//this.scaleX = this.scaleY = this.scale;
+				update = true;
+			   },
+			   "pressmove":function (evt) {
+				 console.log('pressmove',this.name)
+			
+				 //this.scaleX = this.scaleY = this.scale;
+				 //update = true;
+			   },
+			    "pressup":function (evt) {
+				 console.log('pressup',this.name)
+			
+			   },
+			    "mousedown":function (evt) {
+				 console.log('mousedown',this.name)
+			
+			   },
+			   "click":function (evt) {
+				 console.log('click',this.name)
+			
+				 //this.scaleX = this.scaleY = this.scale;
+				 //update = true;
+			   }
+			}
+		
+		
+		});
+	container.addChild(brush);
+	console.log('container',container)
+	update=true;
+
+}
+function init() {
+	//examples.showDistractor();
+	// create stage and point it to the canvas:
+	canvas = document.getElementById("cas");
+	stage = new createjs.Stage(canvas);
+
+	// enable touch interactions if supported on the current device:
+	createjs.Touch.enable(stage);
+
+	// enabled mouse over / out events
+	stage.enableMouseOver(10);
+	stage.mouseMoveOutside = true; // keep tracking the mouse even when it leaves the canvas
+
+stage.on('drawstart',function(){
+  console.log('drawstart')
+})
+stage.on('drawend',function(){
+console.log('drawend')
+})
+	// load the source image:
+	iconObj = new Image();
+	iconObj.src = '../../images/icon1.gif';
+	iconObj.onload = handleIconLoad;
+	
+}
+function handleIconLoad(){
+    
+    var image = new Image();
+	image.src = '../../images/daisy.png';
+	image.onload = handleImageLoad;
+}
+function drawIcon(ctx){
+          ctx.setTransform(1, 0, 0, 1, 0, 0);
+    // console.log('=====drawIcon=====',this.x+'  '+this.y)
+    var x=this.x,y=this.y;
+	ctx.save(); 
+	ctx.translate(this.x,this.y); 
+	//ctx.scale(this.scaleX,this.scaleY);
+	ctx.drawImage(iconObj, 0, 0);
+	ctx.restore(); 
+} 
+function stop() {
+	createjs.Ticker.removeEventListener("tick", tick);
+}
+function draw(ctx){
+       //console.log('draw',this)
+       ctx.save(); 
+ 	   ctx.beginPath();
+	   ctx.translate(this.x,this.y); 
+	   ctx.arc(0,0,this.radius,0*Math.PI,2*Math.PI)
+       ctx.closePath();
+       ctx.fillStyle = this.fillStyle;//'#f4f4f4';
+       ctx.fill();
+       ctx.strokeStyle = '#ccc';
+       ctx.stroke();
+	   ctx.restore(); 
+	   
+}
+function shadow(ctx){
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.shadowOffsetX = 2;
+    ctx.shadowOffsetY = 2;
+    ctx.shadowColor = 'rgba(100,100,100,0.2)';
+    ctx.shadowBlur = 3;
+   
+}
+function drawText(ctx,text){
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.save();
+    ctx.fillStyle="#fff";
+    ctx.font="italic 14px sans-serif";
+    ctx.textBaseline="middle"
+    ctx.textAlign="center";
+    ctx.fillText(text,this.postX+this.width/2, this.postY+this.height/2);
+    ctx.restore();
+}
+function drawCircle(ctx){
+       ctx.setTransform(1, 0, 0, 1, 0, 0);
+       //console.log('drawCircle ',this.name+' '+this.x+' '+this.y)
+       ctx.save(); 
+	   ctx.translate(this.x,this.y); 
+	   ctx.arc(0,0,this.radius,0*Math.PI,2*Math.PI)
+       ctx.closePath();
+       ctx.fillStyle = this.fillStyle;
+       ctx.fill();
+       ctx.strokeStyle =this.strokeStyle;
+       ctx.stroke();
+	   ctx.restore(); 
+	  
+
+}
+function drawRoundedRect(ctx) {
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+	ctx.save(); 
+	shadow(ctx)
+	ctx.translate(this.x,this.y); 
+	ctx.fillStyle = this.fillStyle;
+    ctx.strokeStyle = '#d98d4f';
+	ctx.strokeRect(0,0, this.width,this.height);
+	ctx.fillRect(0,0, this.width,this.height);
+	ctx.restore(); 
+	
+	ctx.save(); 
+	ctx.beginPath();
+	ctx.translate(this.x,this.y); 
+	ctx.strokeStyle = '#d98d4f';
+	ctx.lineWidth = 4;
+  	ctx.moveTo(0, 0);
+    ctx.lineTo(0, this.height);
+    ctx.lineJoin = 'miter';
+	ctx.stroke();
+	ctx.restore(); 
+	
+	ctx.save();
+	ctx.beginPath();
+    ctx.fillStyle="#3c3c3c";
+    ctx.font="normal bolder 10px icon";
+    ctx.textBaseline="middle"
+    ctx.textAlign="center";
+    ctx.fillText('是否订阅公众号',this.x+this.width/2,this.y+15);
+    ctx.restore();
+	
+	ctx.save();
+	ctx.beginPath();
+    ctx.fillStyle="#c8c8c8";
+    ctx.font="normal bolder 10px icon";
+    ctx.textBaseline="middle"
+    ctx.textAlign="center";
+    ctx.fillText('请双击开始设置',this.x+this.width/2,this.y+35);
+    ctx.restore();
+	//console.log('-------------------drawRoundedRect',this.name+' '+this.x+' '+this.y)
+	
+	 
+}
+function  drawCloseBtn(ctx){
+ctx.setTransform(1, 0, 0, 1, 0, 0);
+   	ctx.save(); 
+	ctx.beginPath();
+	ctx.translate(this.x,this.y); 
+	ctx.fillStyle = this.fillStyle;
+    ctx.fillRect(0,0, this.width,this.height);
+	ctx.closePath();
+    ctx.restore(); 
+	ctx.save();
+    ctx.fillStyle="#d98d4f";
+    ctx.font="normal bolder 10px icon";
+    ctx.textBaseline="middle"
+    ctx.textAlign="center";
+    ctx.fillText('×',this.x+this.width/2,this.y+this.height/2);
+    ctx.restore();
+}
+function createNode(id,x,y){
+	var node=new createjs.BrushBox({
+	id:id+'_node',
+	name:id+'_node',
+		 x:x,
+		 y:y
+	});
+    var roundedRect=new createjs.Brush({
+    name:id+'_roundedRect_node',
+	id:id+'_roundedRect_node',
+    groupX:0,
+	groupY:0,
+	z:id,
+	//scaleX:.9,
+	//scaleY:.9,
+	width:170,
+	height:50,
+	fillStyle:'#fafafa',
+	draw:drawRoundedRect,
+	listeners:{
+	  'mousemove':function(e){
+	    console.log('dragStart ',dragStart+" mousemove:"+this.name)
+	    if(dragStart){
+		    this.x=e.offsetX-this.offsetX;
+			this.y=e.offsetY-this.offsetY;
+		 }
+	
+		
+	  },
+	  'mouseover':function(e){
+	    console.log('mouseover:'+this.name)
+		console.log('mouseover:'+this.parent.name)
+	   //  this.getChild(this.id+'_closeBtn').visible=true;
+	  },
+	  'mouseout':function(e){
+	     console.log('mouseout:'+this.name)
+	   	 //this.getChild(this.id+'_closeBtn').visible=false;
+		
+	  },
+	  'mouseup':function(e){
+	    this.active=false;
+	    dragStart=false;
+		UPDATE=false;
+		
+	  },
+	  'mousedown':function(e){
+	    // console.log('mousedown',e)
+	    // console.log('mousedown',this)
+		 this.offsetX=e.offsetX-this.x;
+	     this.offsetY=e.offsetY-this.y;
+		 this.z=maxZ++;
+		 this.active=true;
+		 dragStart=true;
+		 UPDATE=true;
+		//  stage.render();
+	  }
+	  ,
+	   'click':function(e){
+	      console.log(this.name)
+	   }
+	}
+  });
+  var closeBtn=new createjs.Brush({
+    id:id+'_closeBtn',
+	name:id+'_closeBtn',
+	groupX:152,
+	groupY:0,
+    width:18,
+	height:18,
+	fillStyle:'#d9e6f3',
+	draw:drawCloseBtn,
+	visible:false,
+	listeners:{
+	  'mouseover':function(e){
+	     this.visible=true;
+	     stage.canvas.style.cursor='pointer';
+		
+	  },
+	  'mouseout':function(e){
+	      this.visible=false;
+	   	  stage.canvas.style.cursor='';
+		//  stage.render();
+	  },
+	  'click':function(e){
+	     stage.removeChild(this.parentId)
+	  }
+	}
+  });
+  var icon=new createjs.Brush({
+    id:id+'_icon',
+	name:id+'_icon',
+	groupX:12,
+	groupY:10,
+	scale:.91,
+    scaleX:1,
+	scaleY:1,
+	draw:drawIcon
+  });
+  var input=new createjs.Brush({
+    id:id+'_input',
+	name:id+'_input',
+	groupX:00,
+	groupY:0,
+	radius:6.5,
+	strokeStyle:'#d8d8d8',
+	fillStyle:'#fafafa',
+   	draw:drawCircle
+  });
+  var output_y=new createjs.Brush({
+    id:id+'_output_y',
+	name:id+'_output_y',
+	groupX:0,
+	groupY:50,
+	radius:6.5,
+	strokeStyle:'#65bb43',
+	fillStyle:'#dcffce',
+     listeners:{
+	  
+	  'click':function(e){
+	     console.log("output_y",this.name)
+	  }
+	},
+    draw:drawCircle
+  });
+  var output_x=new createjs.Brush({
+    id:id+'_output_x',
+	name:id+'_output_x',
+	groupX:0,
+	groupY:0,
+	radius:6.5,
+	strokeStyle:'#e64646',
+	fillStyle:'#ffe1e1',
+	 listeners:{
+	  
+	  'click':function(e){
+	    console.log('output_x',this.name)
+	  }
+	 }, 
+   	draw:drawCircle
+  });
+ // node.addChild(roundedRect)
+  node.addChild(roundedRect,closeBtn,icon,input,output_y,output_x);
+  return node;
+
+}
+function handleImageLoad(event) {
+	var image = event.target;
+	var bitmap;
+	container = new createjs.Container();
+	stage.addChild(container);
+
+	// create and populate the screen with random daisies:
+	for (var i = 0; i < 0; i++) {
+		bitmap = new createjs.Bitmap(image);
+		container.addChild(bitmap);
+		bitmap.x = canvas.width * Math.random() | 0;
+		bitmap.y = canvas.height * Math.random() | 0;
+		bitmap.rotation = 360 * Math.random() | 0;
+		bitmap.regX = bitmap.image.width / 2 | 0;
+		bitmap.regY = bitmap.image.height / 2 | 0;
+		bitmap.scaleX = bitmap.scaleY = bitmap.scale = Math.random() * 0.4 + 0.6;
+		bitmap.name = "bmp_" + i;
+		bitmap.cursor = "pointer";
+
+		// using "on" binds the listener to the scope of the currentTarget by default
+		// in this case that means it executes in the scope of the button.
+		bitmap.on("mousedown", function (evt) {
+			this.parent.addChild(this);
+			this.offset = {x: this.x - evt.stageX, y: this.y - evt.stageY};
+		});
+
+		// the pressmove event is dispatched when the mouse moves after a mousedown on the target until the mouse is released.
+		bitmap.on("pressmove", function (evt) {
+			this.x = evt.stageX + this.offset.x;
+			this.y = evt.stageY + this.offset.y;
+			// indicate that the stage should be updated on the next tick:
+			update = true;
+		});
+
+		bitmap.on("rollover", function (evt) {
+			this.scaleX = this.scaleY = this.scale * 1.2;
+			update = true;
+		});
+
+		bitmap.on("rollout", function (evt) {
+			this.scaleX = this.scaleY = this.scale;
+			update = true;
+		});
+
+	}
+	for (var i = 0; i < 3; i++) {
+	    var brush = new createjs.Brush({
+			name:'brush'+i,
+			cursor:"pointer",
+			fillStyle:'#f4f4f4',
+			draw:draw,
+			radius:10,
+			//x:canvas.width * Math.random() | 0,
+			//y:canvas.height * Math.random() | 0,
+			x:100,
+			y:100+i*60,
+			listeners:{
+			   "rollover":function (evt) {
+				//this.scaleX = this.scaleY = this.scale * 1.2;
+				//console.log('rollover',this.name)
+				update = true;
+			   },
+			   "rollout":function (evt) {
+				 //console.log('rollout',this.name)
+				//this.scaleX = this.scaleY = this.scale;
+				update = true;
+			   },
+			   "pressmove":function (evt) {
+				 console.log('pressmove',this.name)
+			
+				 //this.scaleX = this.scaleY = this.scale;
+				 //update = true;
+			   },
+			    "pressup":function (evt) {
+				 console.log('pressup',this.name)
+			
+			   },
+			    "mousedown":function (evt) {
+				 console.log('mousedown',this.name)
+			
+			   },
+			   "click":function (evt) {
+				 console.log('click',this.name)
+			
+				 //this.scaleX = this.scaleY = this.scale;
+				 //update = true;
+			   }
+			}
+		
+		
+		});
+		var rect = new createjs.Brush({
+			name:'drawRoundedRect_Brush_'+i,
+			id:'drawRoundedRect_Brush_'+i,
+			cursor:"pointer",
+			fillStyle:'#f4f4f4',
+			draw:drawRoundedRect,
+			width:170,
+			height:50,
+			x:200,
+			y:20+i*32,
+			radius:20,
+			listeners:{
+			   "rollover":function (evt) {
+			   console.log('rollover',this.name)
+				//this.scaleX = this.scaleY = this.scale * 1.2;
+				//console.log('rollover',this.name)
+				update = true;
+			   },
+			   "rollout":function (evt) {
+			   console.log('rollover',this.name)
+				 //console.log('rollout',this.name)
+				//this.scaleX = this.scaleY = this.scale;
+				 update = true;
+			   },
+			   "click":function (evt) {
+				 console.log('click',this.name)
+				 console.log('click',this.sourceRect)
+				 //this.scaleX = this.scaleY = this.scale;
+				 //update = true;
+			   }
+			}
+		
+		
+		});
+		var node= createNode(i,200,200)
+	    container.addChild(rect,brush);
+		//container.addChild(node);
+		//node.appendTo(container);
+		//container.addChild(brush);
+	
+	}
+   
+	//stage.update()
+	//examples.hideDistractor();
+	createjs.Ticker.addEventListener("tick", tick);
+}
+
+function tick(event) {
+	// this set makes it so the stage only re-renders when an event handler indicates a change has happened.
+	if (update) {
+	     console.log('tick')
+		update = false; // only update once
+		stage.update(event);
+	}
+}
+init();
+</script>
+</body></html>

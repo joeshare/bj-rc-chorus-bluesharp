@@ -1,0 +1,99 @@
+<!--新建实体模型-->
+<ad-modal
+        title="新建实体模型"
+        width="850px"
+        height="550px"
+        :display="createFormShow"
+        :buttons="createFormButton"
+        @admin-modal-off="() => {close() }">
+    <div class="admin-grid-container" v-show="createFormStep === 1">
+        <div class="admin-grid-cell-6 create-form-el-container">
+            <ad-input-edit
+                    class="create-form-el"
+                    label="实体名称 （必填）"
+                    placeholder="起一个名称，方便您后期来识别它"
+                    maxlength="20"
+                    :warnings="entityModelRecorder.entityNameWarnings"
+                    :small="true"
+                    v-model="entityModelRecorder.entityName"
+                    ></ad-input-edit>
+        </div>
+        <div class="admin-grid-cell-6 create-form-el-container">
+            <ad-input-edit
+                    class="create-form-el"
+                    label="实体编码 （必填）"
+                    placeholder="定义一个编码，作为系统唯一标记"
+                    maxlength="25"
+                    :warnings="entityModelRecorder.entityCodeWarnings"
+                    :small="true"
+                    v-model="entityModelRecorder.entityCode"
+                    ></ad-input-edit>
+        </div>
+        <div class="admin-grid-cell-6 create-form-el-container">
+            <ad-select-tips
+                    class="create-form-el"
+                    :defualtvalue="entityModelRecorder.entityType"
+                    label="实体类型 "
+                    :small="true"
+                    :options="entityTypeOptions"
+                    v-model="entityModelRecorder.entityType"></ad-select-tips>
+        </div>
+        <div class="admin-grid-cell-12 create-form-el-container">
+            <ad-input-edit
+                    class="create-form-el"
+                    type="textarea"
+                    label="实体描述"
+                    placeholder=""
+                    :small="true"
+                    :warnings="entityModelRecorder.entityDescWarnings"
+                    maxlength="50"
+                    v-model="entityModelRecorder.entityDesc"></ad-input-edit>
+        </div>
+    </div>
+    <div clas="create-form-step-2-container" v-show="createFormStep === 2">
+        <button class="admin-small new-field-button" @click="insertNewField('no')">添加属性</button>
+        <div class="field-table-container">
+            <table class="admin-table admin-stripedd field-table">
+                <thead>
+                <tr>
+                    <th>字段</th>
+                    <th>名称</th>
+                    <th>格式类型</th>
+                    <th style="width: 140px;">是否为主键</th>
+                    <th>描述</th>
+                    <th>安全等级</th>
+                    <th>操作</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr v-if="entityModelRecorder.propertyList&&entityModelRecorder.propertyList.length==0">
+                    <td  :colspan="7" style="height: 30px;line-height: 30px;text-align: center">暂无数据</td>
+                </tr>
+                <tr v-for="(field,index) in entityModelRecorder.propertyList" v-else>
+                    <td>
+                        <ad-input-edit  placeholder=""   maxlength="20" :small="true"  :warnings="field.propertyCodeWarnings"  @keyup=""  class="field-table-form-el" v-model="field.propertyCode"></ad-input-edit>
+                    </td>
+                    <td>
+                        <ad-input-edit  placeholder=""  maxlength="20" :small="true"  :warnings="field.propertyNameWarnings"  @keyup=""  class="field-table-form-el" v-model="field.propertyName"></ad-input-edit>
+                    </td>
+                    <td>
+                        <ad-select class="field-table-form-el" :small="true" :warnings="field.propertyTypeWarnings" :options="propertyDatatypeOptions" v-model="field.propertyType" ></ad-select>
+                    </td>
+                    <td>
+                        <ad-radio-edit class="field-table-form-radio-td" v-model="field.isPrimaryKeyRadioValue"  :warnings="field.isPrimaryKeyWarnings" @click="clickPrimaryKeyRadio" name="primaryKey" :radios="field.primaryKeyRadios" ></ad-radio-edit>
+                    </td>
+                    <td style="max-width: 200px; overflow: hidden;">
+                        <ad-input-edit  placeholder=""  :small="true" maxlength="50" :warnings="field.propertyDescWarnings"   class="field-table-form-el" v-model="field.propertyDesc"></ad-input-edit>
+                    </td>
+                    <td>
+                        <ad-select  class="field-table-form-el" :small="true" v-model="field.securityLevel" :warnings="field.securityLevelWarnings" :options="securityLevelOptions"></ad-select>
+                    </td>
+                    <td>
+                        <button class="admin-small" @click="deleteField(field)">删除</button>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</ad-modal>
